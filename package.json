@@ -1,0 +1,12 @@
+{
+  "name": "homeflix",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": { "start": "node --env-file-if-exists=.env src/server.js", "scan": "node --env-file-if-exists=.env src/scan-cli.js", "convert": "node --env-file-if-exists=.env scripts/convert.js" },
+  "engines": { "node": ">=22.13" },
+  "dependencies": {
+    "@fastify/static": "^7.0.4",
+    "fastify": "^4.28.1"
+  }
+}

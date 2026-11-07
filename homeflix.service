@@ -1,0 +1,12 @@
+[Unit]
+Description=HomeFlix
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/homeflix
+ExecStart=/usr/bin/node --env-file-if-exists=.env src/server.js
+Restart=on-failure
+User=pi
+
+[Install]
+WantedBy=multi-user.target

@@ -12,7 +12,7 @@ Apri il browser da PC, telefono o smart TV, scegli un titolo e lo guardi in stre
 - **Riproduzione nel browser** con salto in avanti e indietro (il server usa le HTTP range requests, quindi non scarica tutto il file).
 - **"Continua a guardare"**: ricorda il punto in cui eri rimasto e riprende da lì.
 - **Episodio successivo automatico** a fine puntata.
-- **Convertitore incluso**: trasforma i vecchi `.avi` (XviD) in MP4 compatibili con il browser, scegliendo da solo la traccia audio italiana.
+- **Convertitore incluso**: trasforma qualsiasi video (avi, mkv, mov, ts...) in MP4 compatibili con il browser, in alta qualità e senza upscaling, scegliendo da solo la traccia audio italiana.
 - **Leggero**: backend Node.js + SQLite integrato, nessun database da installare né librerie native da compilare.
 
 ## Requisiti
@@ -71,26 +71,25 @@ media/
 
 Il browser riproduce direttamente solo certi formati, e il Raspberry non è abbastanza potente per ricodificare al volo. Il formato sicuro è **MP4 con video H.264 e audio AAC**. File con video HEVC, audio DTS/AC3 o contenitori vecchi come AVI spesso non partono.
 
-### Convertire i vecchi `.avi`
+### Convertire qualsiasi video con lo script incluso
 
 ```bash
 npm run convert -- "C:\Video\Mr.Robot.S01.ITA.ENG.XviD" --dry-run   # prova: mostra cosa farebbe
 npm run convert -- "C:\Video\Mr.Robot.S01.ITA.ENG.XviD"             # conversione vera
 ```
 
-Lo script:
-- cerca gli `.avi` (anche nelle sottocartelle) e li converte in MP4 H.264 + AAC stereo;
-- sceglie la traccia audio italiana, prima dal metadato di lingua del file e, se manca, dall'ordine nel nome (`ITA.ENG` = prima traccia, `ENG.ITA` = seconda);
-- salva in `MEDIA_DIR` con i nomi giusti (`Serie/S01/Serie S01E01.mp4`, `Film (2010).mp4`);
-- salta i file già convertiti, quindi si può rilanciare senza problemi.
+Accetta una cartella (anche con sottocartelle) o un singolo file, in qualsiasi formato: `avi, mkv, mp4, m4v, mov, wmv, asf, flv, mpg, mpeg, ts, m2ts, mts, vob, webm, divx, 3gp, ogm, ogv, rmvb`. Per ogni file lo script:
 
-Opzioni: `--out <cartella>`, `--lang ita|eng|fre|ger|spa|jpn`, `--crf 20` (qualità, più basso = migliore), `--preset fast`. Conviene convertire sul PC e non sul Raspberry, che è molto più lento.
+- **Mantiene la qualità e la risoluzione originale**: nessun upscaling, mai. La ricodifica usa H.264 con CRF 18 (qualità visivamente trasparente).
+- **Non tocca ciò che è già compatibile**: video H.264 / audio AAC vengono solo travasati in MP4, senza perdita e in pochi secondi.
+- **Ricodifica solo se serve** (XviD, HEVC, MPEG-2, VC-1, 10 bit...) e corregge da solo i problemi tipici: video interlacciati dei DVD e delle registrazioni TV (deinterlaccio), pixel non quadrati dei DVD (proporzioni corrette), HDR (convertito in SDR con tone mapping, se il tuo ffmpeg ha `zscale`), dimensioni dispari.
+- **Sceglie la traccia audio italiana**, prima dal metadato di lingua del file e, se manca, dall'ordine nel nome (`ITA.ENG` = prima traccia, `ENG.ITA` = seconda). Audio surround e formati come DTS/AC3 diventano AAC stereo, mentre un AAC stereo già presente viene copiato.
+- **Toglie il superfluo**: sottotitoli, capitoli e metadati vengono scartati, e se nel file c'è una copertina non viene scambiata per il video.
+- **Salva in `MEDIA_DIR` con i nomi giusti** (`Serie/S01/Serie S01E01.mp4`, `Film (2010).mp4`) e **salta i file già convertiti**, quindi si può rilanciare senza problemi.
 
-Per altri formati (per esempio MKV con HEVC) il comando ffmpeg base è:
+Con `--dry-run` per ogni file stampa cosa farà (copia o ricodifica, e perché) e quale traccia audio sceglie.
 
-```bash
-ffmpeg -i input.mkv -c:v libx264 -crf 20 -c:a aac -ac 2 -movflags +faststart output.mp4
-```
+Opzioni: `--out <cartella>`, `--lang ita|eng|fre|ger|spa|jpn`, `--crf 18` (qualità: più basso = migliore e più pesante, 16-20 consigliato), `--preset medium` (`slow` dà file un po' più piccoli a parità di qualità ma è più lento) e `--max-height 1080` (riduce solo i video più alti di così, ad esempio i 4K, per risparmiare spazio; non ingrandisce mai quelli più bassi). Conviene convertire sul PC e non sul Raspberry, che è molto più lento.
 
 ## Uso dell'interfaccia
 
@@ -129,7 +128,7 @@ homeflix/
 ├── public/
 │   └── index.html     interfaccia web (un solo file, senza build)
 ├── scripts/
-│   └── convert.js     convertitore .avi -> .mp4
+│   └── convert.js     convertitore di qualsiasi video in MP4
 ├── media/             i tuoi video (ignorata da Git)
 ├── .env.example       modello di configurazione
 └── homeflix.service   servizio systemd per il Raspberry
@@ -148,7 +147,7 @@ Non pubblicare mai il file `.env` (contiene la chiave TMDB): è già escluso da 
 - Nessun login né profili utente: i progressi di visione sono unici per tutta l'app.
 - Nessun supporto ai sottotitoli, e nessun selettore della traccia audio nel player.
 - Le serie sono riconosciute solo con `S01E03` o `1x03` nel nome.
-- Il convertitore tratta solo file `.avi`.
+- Il convertitore scarta i sottotitoli incorporati.
 
 Idee: login semplice, sottotitoli WebVTT, selettore audio, scansione automatica quando compaiono nuovi file.
 

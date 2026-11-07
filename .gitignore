@@ -1,4 +1,8 @@
-data/
 node_modules/
+data/
 .env
-media/
+
+# I video non vanno su Git (troppo pesanti e coperti da copyright)
+media/*
+!media/.gitkeep
+*.part

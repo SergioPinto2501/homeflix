@@ -2,111 +2,197 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141414">
 <title>HomeFlix</title>
 <style>
-:root{--bg:#0e0e10;--panel:#181a1d;--text:#f2f0ea;--dim:#a7a7ab;--red:#e03a3e;color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+:root{--bg:#141414;--panel:#181818;--dim:#b3b3b3;--red:#e50914;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:#fff;font:16px/1.45 "Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;overflow-x:hidden}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+.i{width:1.5em;height:1.5em;fill:currentColor;vertical-align:middle;flex:none}
 :focus-visible{outline:2px solid #fff;outline-offset:2px}
-nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:1.4rem;padding:.9rem 4%;background:linear-gradient(#000c,#0000);transition:background .3s}
+.disp{font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif;letter-spacing:.03em}
+nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:1.6rem;padding:calc(.8rem + var(--st)) 4% .8rem;background:linear-gradient(#000d,#0000);transition:background .3s}
 nav.solid{background:var(--bg)}
-.logo{font:900 1.7rem/1 "Arial Narrow","Helvetica Neue",Arial,sans-serif;letter-spacing:.02em;color:var(--red)}
-.tabs{display:flex;gap:1.2rem}
-.tabs button{color:var(--dim);font-size:.95rem}.tabs button.on,.tabs button:hover{color:#fff}
+.logo{font-size:1.9rem;line-height:1;color:var(--red);font-weight:900}
+.tabs{display:flex;gap:1.3rem}
+.tabs button{color:#e5e5e5;font-size:.92rem}.tabs button.on{font-weight:700;color:#fff}.tabs button:hover{color:var(--dim)}
 .sp{flex:1}
-#q{background:#000a;border:1px solid #fff6;border-radius:4px;color:#fff;padding:.4rem .7rem;width:min(14rem,36vw);font:inherit}
-#scan{color:var(--dim);font-size:.9rem}#scan:hover{color:#fff}
-.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;border-radius:4px;font-weight:700;font-size:1.05rem}
-.btn.w{background:#fff;color:#000}.btn.w:hover{background:#ffffffc0}
-.btn.g{background:#6d6d6eb3;color:#fff}.btn.g:hover{background:#6d6d6e66}
-.hero{position:relative;height:min(80vh,740px);display:flex;align-items:flex-end;padding:0 4% 8%}
+.sbox{display:flex;align-items:center;gap:.2rem;padding:.2rem .4rem;border:1px solid transparent}
+.sbox.open{border-color:#fff;background:#000a}
+.sbox input{width:0;padding:0;border:0;background:none;color:#fff;font:inherit;outline:0;transition:width .25s}
+.sbox.open input{width:min(14rem,40vw);padding:.2rem .4rem}
+#scan{display:flex;align-items:center;gap:.4rem;color:var(--dim);font-size:.9rem}#scan:hover{color:#fff}
+.bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:25;justify-content:space-around;background:#0b0b0bf5;border-top:1px solid #ffffff14;padding:.3rem 0 calc(.3rem + var(--sb))}
+.bar button{display:flex;flex-direction:column;align-items:center;gap:.1rem;font-size:.68rem;color:var(--dim);min-width:4.5rem;padding:.35rem}
+.bar button.on{color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.55rem 1.5rem;border-radius:4px;font-weight:700;font-size:1.05rem;min-height:2.75rem}
+.btn.w{background:#fff;color:#000}.btn.w:hover{background:#ffffffbf}
+.btn.g{background:#6d6d6eb3}.btn.g:hover{background:#6d6d6e66}
+.hero{position:relative;height:min(82vh,760px);display:flex;align-items:flex-end;padding:0 4% 9%}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000b 0,#0000 62%),linear-gradient(#0000 55%,var(--bg))}
-.hero>div{position:relative;z-index:1;max-width:36rem}
-.hero h1{font-size:clamp(2rem,5vw,3.8rem);margin:0 0 .6rem;line-height:1.05;text-shadow:0 2px 12px #000a}
+.hero>div{position:relative;z-index:1;max-width:34rem}
+.hk{letter-spacing:.3em;font-size:.72rem;color:#ddd;font-weight:700;margin:0 0 .4rem}
+.hero h1{font-size:clamp(2.6rem,6vw,4.6rem);line-height:.95;margin:0 0 .8rem;font-weight:900;text-shadow:0 2px 14px #000a}
 .hero p{margin:0 0 1.2rem;color:#e8e8e8;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 6px #000a}
-.hero .acts{display:flex;gap:.7rem;flex-wrap:wrap}
+.acts{display:flex;gap:.7rem}
 main{margin-top:-5rem;position:relative;z-index:2;padding-bottom:4rem}
 main.pad{margin-top:5.5rem}
-.row{margin:0 0 1.2rem}
-.row h2{font-size:1.25rem;margin:0 4% .2rem}
+.row{margin:0 0 1rem}
+.row h2{font-size:1.3rem;margin:0 4%;font-weight:700}
 .rw{position:relative}
-.track{display:flex;gap:.5rem;overflow-x:auto;padding:.8rem 4% 1.4rem;scroll-snap-type:x proximity;scrollbar-width:none}
+.track{display:flex;gap:.45rem;overflow-x:auto;padding:.8rem 4% 1.4rem;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .track::-webkit-scrollbar{display:none}
-.arrow{position:absolute;top:0;bottom:1.4rem;width:4%;z-index:3;background:#000a;font-size:2rem;opacity:0;transition:opacity .2s}
+.arrow{position:absolute;top:.8rem;bottom:1.4rem;width:4%;z-index:3;background:#000a;font-size:2.2rem;opacity:0;transition:opacity .2s}
 .rw:hover .arrow{opacity:1}.arrow.l{left:0}.arrow.r{right:0}
-.card{flex:0 0 auto;width:clamp(120px,14vw,190px);aspect-ratio:2/3;border-radius:4px;position:relative;overflow:hidden;scroll-snap-align:start;transition:transform .2s;text-align:left}
-.card.wide{width:clamp(210px,24vw,330px);aspect-ratio:16/9}
-.card:hover,.card:focus-visible{transform:scale(1.07);z-index:4}
-.lbl{position:absolute;left:0;right:0;bottom:0;padding:1.6rem .6rem .5rem;background:linear-gradient(#0000,#000d);font-weight:600;font-size:.9rem}
+.card{flex:0 0 auto;width:clamp(105px,14vw,190px);aspect-ratio:2/3;border-radius:4px;position:relative;overflow:hidden;scroll-snap-align:start;transition:transform .2s,box-shadow .2s;text-align:left}
+.card.wide{width:clamp(200px,24vw,330px);aspect-ratio:16/9}
+.card:hover,.card:focus-visible{transform:scale(1.08);z-index:4;box-shadow:0 8px 24px #000c}
+.lbl{position:absolute;left:0;right:0;bottom:0;padding:1.6rem .6rem .5rem;background:linear-gradient(#0000,#000e);font-weight:700;font-size:.9rem}
+.hov{opacity:0;transition:opacity .2s}.card:hover .hov,.card:focus-visible .hov{opacity:1}
 .nm{position:absolute;inset:0;display:grid;place-items:center;padding:.8rem;text-align:center;font-weight:700;font-size:1.05rem;text-shadow:0 1px 4px #0008}
+.pl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2.8rem;height:2.8rem;display:grid;place-items:center;border:2px solid #fff;border-radius:50%;background:#0008}
 .pb{position:absolute;left:0;right:0;bottom:0;height:4px;background:#fff4}.pb i{display:block;height:100%;background:var(--red)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1.2rem .6rem;padding:0 4%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1.2rem .5rem;padding:0 4%}
 .grid .card{width:auto}
 .empty{padding:6rem 4%;color:var(--dim);text-align:center}
-#modal{position:fixed;inset:0;z-index:30;background:#000c;overflow:auto;padding:2rem 1rem;display:none}
+#mq{display:block;width:calc(100% - 8%);margin:0 4% 1.2rem;padding:.8rem 1rem;border-radius:6px;border:0;background:#333;color:#fff;font:inherit;font-size:1rem;outline:0}
+#modal{position:fixed;inset:0;z-index:30;background:#000b;overflow:auto;overscroll-behavior:contain;padding:2rem 1rem;display:none}
 #modal.on{display:block}
-.sheet{max-width:880px;margin:0 auto;background:var(--panel);border-radius:8px;overflow:hidden;position:relative}
-.ban{height:min(46vw,400px);display:flex;align-items:flex-end;padding:1.5rem 2rem;position:relative}
-.ban::after{content:"";position:absolute;inset:0;background:linear-gradient(#0000 35%,var(--panel))}
+.sheet{max-width:900px;margin:0 auto;background:var(--panel);border-radius:8px;overflow:hidden;position:relative;animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+.ban{height:min(50vw,440px);display:flex;align-items:flex-end;padding:1.5rem 2.2rem;position:relative}
+.ban::after{content:"";position:absolute;inset:0;background:linear-gradient(#0000 40%,var(--panel))}
 .ban>*{position:relative;z-index:1}
-.ban h2{margin:0 0 .8rem;font-size:clamp(1.6rem,4vw,2.6rem);line-height:1.1;text-shadow:0 2px 10px #000a}
-.x{position:absolute;top:.8rem;right:.8rem;z-index:2;width:2.2rem;height:2.2rem;border-radius:50%;background:var(--bg);font-size:1.1rem}
-.body{padding:0 2rem 2rem}
-.meta{color:var(--dim);margin:0 0 .8rem}
+.ban h2{margin:0 0 .9rem;font-size:clamp(2rem,5vw,3.2rem);line-height:1;font-weight:900;text-shadow:0 2px 12px #000a}
+.x{position:absolute;top:calc(.8rem + var(--st));right:.8rem;z-index:3;width:2.6rem;height:2.6rem;border-radius:50%;background:#181818e6;display:grid;place-items:center}
+.body{padding:0 2.2rem 2rem}
+.meta{margin:0 0 .8rem;color:var(--dim)}.meta b{color:#46d369}
 .body p{max-width:65ch;margin:0 0 1.2rem}
-.sh{display:flex;justify-content:space-between;align-items:center;margin:1.2rem 0 .4rem}
-.sh b{font-size:1.2rem}
-select{background:var(--bg);color:inherit;border:1px solid #fff4;border-radius:4px;padding:.4rem .6rem;font:inherit}
-.ep{display:grid;grid-template-columns:2.5rem 1fr;gap:.3rem 1rem;align-items:center;width:100%;padding:.9rem .6rem;border-bottom:1px solid #fff1;text-align:left;position:relative}
-.ep:hover{background:#ffffff12}
-.ep b{font-size:1.4rem;color:var(--dim);text-align:center;grid-row:span 2}
+.sh{display:flex;justify-content:space-between;align-items:center;margin:1.4rem 0 .4rem}.sh b{font-size:1.3rem}
+select{background:#242424;color:inherit;border:1px solid #fff4;border-radius:4px;padding:.55rem .8rem;font:inherit}
+.ep{display:grid;grid-template-columns:2.6rem 1fr 2rem;gap:.3rem 1rem;align-items:center;width:100%;padding:1rem .6rem;border-bottom:1px solid #fff1;text-align:left;min-height:3.5rem}
+.ep:hover{background:#ffffff14}
+.ep b{font-size:1.5rem;color:var(--dim);text-align:center;grid-row:span 2}
+.ep .ic{grid-row:span 2;opacity:.7}
 .ep .pb{position:static;grid-column:2;border-radius:2px}
-#player{position:fixed;inset:0;z-index:40;background:#000;display:none}
+#player{position:fixed;inset:0;z-index:40;background:#000;display:none;touch-action:manipulation}
 #player.on{display:block}
-#vid{width:100%;height:100%;background:#000}
-.pbar{position:absolute;top:0;left:0;right:0;padding:1rem 1.5rem;display:flex;gap:1rem;align-items:center;background:linear-gradient(#000a,#0000);transition:opacity .3s;pointer-events:none}
-.pbar button{pointer-events:auto;font-size:1.6rem}
-#player.idle .pbar{opacity:0}#player.idle{cursor:none}
-@media(max-width:640px){nav{gap:.8rem}.logo{font-size:1.3rem}.tabs{gap:.8rem}.body,.ban{padding-left:1rem;padding-right:1rem}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+#vid{width:100%;height:100%;object-fit:contain;background:#000}
+.pui{position:absolute;inset:0;pointer-events:none;transition:opacity .25s}
+.pui button,.pui input{pointer-events:auto}
+.pui::before,.pui::after{content:"";position:absolute;left:0;right:0;height:9rem}
+.pui::before{top:0;background:linear-gradient(#000b,#0000)}.pui::after{bottom:0;background:linear-gradient(#0000,#000c)}
+#player.idle .pui{opacity:0}#player.idle .pui button,#player.idle .pui input{pointer-events:none}#player.idle{cursor:none}
+.ptop{position:absolute;top:0;left:0;right:0;z-index:1;display:flex;align-items:center;gap:1rem;padding:calc(1rem + var(--st)) calc(1.5rem + var(--sr)) 0 calc(1rem + var(--sl))}
+.ptop button{width:2.8rem;height:2.8rem;display:grid;place-items:center}
+.pmid{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;display:flex;align-items:center;gap:clamp(1.5rem,8vw,4.5rem)}
+.pmid button{width:3.4rem;height:3.4rem;display:grid;place-items:center}.pmid .i{width:2.6rem;height:2.6rem}
+.pmid #pp{width:4.6rem;height:4.6rem;border-radius:50%;background:#0007}.pmid #pp .i{width:3rem;height:3rem}
+.pbot{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:0 calc(1.5rem + var(--sr)) calc(.8rem + var(--sb)) calc(1.5rem + var(--sl))}
+.sk{display:flex;align-items:center;gap:.8rem}
+#seek{flex:1;accent-color:var(--red);height:1.8rem;cursor:pointer}
+.tm{font-size:.85rem;font-variant-numeric:tabular-nums;color:#ddd;min-width:3.2rem;text-align:center}
+.pr{display:flex;justify-content:space-between;align-items:center}
+.pr>div{display:flex;align-items:center;gap:.4rem}
+.pr button{display:flex;align-items:center;gap:.4rem;padding:.5rem;min-height:2.75rem}
+#vol{width:6rem;accent-color:#fff}
+#sfb{position:absolute;top:40%;background:#000a;padding:.5rem 1rem;border-radius:2rem;opacity:0;transition:opacity .2s;pointer-events:none;transform:translateX(-50%)}
+#sfb.show{opacity:1}
+@media(hover:none){.arrow,.vl{display:none}.card:hover{transform:none;box-shadow:none}.hov{display:none}}
+@media(max-width:700px){
+ nav{gap:.8rem}.tabs,.sbox,#scan .lb{display:none}.logo{font-size:1.6rem}.bar{display:flex}
+ main{padding-bottom:6rem}
+ .hero{height:74vh;justify-content:center;text-align:center;padding:0 6% 14%}
+ .hero>div{max-width:none;width:100%}.hero p{-webkit-line-clamp:2;font-size:.95rem}.acts{justify-content:center}.acts .btn{flex:1}
+ .row h2{font-size:1.1rem}.card.wide{width:62vw}.grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}
+ #modal{padding:0;background:var(--panel)}.sheet{border-radius:0;min-height:100%;max-width:none;box-shadow:none}
+ .ban{height:64vw;padding:1rem}.body{padding:0 1rem 2rem}
+ .pmid{gap:2.2rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <nav id="nav">
-  <span class="logo">HOMEFLIX</span>
+  <span class="logo disp">HOMEFLIX</span>
   <div class="tabs">
     <button class="on" data-v="home">Home</button>
     <button data-v="series">Serie TV</button>
     <button data-v="movie">Film</button>
   </div>
   <span class="sp"></span>
-  <input id="q" type="search" placeholder="Cerca" aria-label="Cerca">
-  <button id="scan" title="Cerca nuovi file nella cartella media">Aggiorna</button>
+  <div class="sbox" id="sbox"><button id="sbtn" data-ic="search" aria-label="Cerca"></button><input id="sq" type="search" placeholder="Titoli" aria-label="Cerca"></div>
+  <button id="scan" data-ic="refresh" title="Cerca nuovi file nella cartella media"><span class="lb">Aggiorna</span></button>
 </nav>
 <header class="hero" id="hero" hidden><div>
-  <h1 id="hT"></h1><p id="hP"></p>
-  <div class="acts"><button class="btn w" id="hPlay">▶ Riproduci</button><button class="btn g" id="hInfo">Altre info</button></div>
+  <p class="hk" id="hK"></p><h1 class="disp" id="hT"></h1><p id="hP"></p>
+  <div class="acts"><button class="btn w" id="hPlay"></button><button class="btn g" id="hInfo">Altre info</button></div>
 </div></header>
 <main id="main"></main>
-<div id="modal" aria-modal="true" role="dialog"></div>
+<div class="bar" id="bar">
+  <button class="on" data-v="home" data-ic="home"><span>Home</span></button>
+  <button data-v="series" data-ic="tv"><span>Serie TV</span></button>
+  <button data-v="movie" data-ic="film"><span>Film</span></button>
+  <button data-v="search" data-ic="search"><span>Cerca</span></button>
+</div>
+<div id="modal" role="dialog" aria-modal="true"></div>
 <div id="player">
-  <video id="vid" controls playsinline></video>
-  <div class="pbar"><button id="back" aria-label="Indietro">←</button><span id="pT"></span></div>
+  <video id="vid" playsinline></video>
+  <div class="pui">
+    <div class="ptop"><button id="back" data-ic="back" aria-label="Indietro"></button><span id="pT"></span></div>
+    <div class="pmid"><button id="b10" data-ic="b10" aria-label="Indietro di 10 secondi"></button><button id="pp" aria-label="Play/Pausa"></button><button id="f10" data-ic="f10" aria-label="Avanti di 10 secondi"></button></div>
+    <div class="pbot">
+      <div class="sk"><span class="tm" id="tc">0:00</span><input type="range" id="seek" min="0" max="1000" value="0" aria-label="Posizione"><span class="tm" id="td">0:00</span></div>
+      <div class="pr">
+        <div class="vl"><button id="vl" data-ic="vol" aria-label="Audio"></button><input type="range" id="vol" min="0" max="1" step=".05" value="1" aria-label="Volume"></div>
+        <div><button id="nx" data-ic="next" hidden>Prossimo episodio</button><button id="fs" data-ic="full" aria-label="Schermo intero"></button></div>
+      </div>
+    </div>
+  </div>
+  <span id="sfb"></span>
 </div>
 <script>
-const $ = (s) => document.querySelector(s);
+const $ = (s) => document.querySelector(s), $$ = (s) => document.querySelectorAll(s);
 const j = (u, o) => fetch(u, o).then((r) => r.json());
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const S = 'stroke="currentColor" fill="none"';
+const IC = {
+  play: '<path d="M8 5v14l11-7z"/>', pause: '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>',
+  b10: '<path d="M12 5V2L7 6l5 4V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/><text x="12" y="16" font-size="7" font-weight="700" text-anchor="middle">10</text>',
+  f10: '<path d="M12 5V2l5 4-5 4V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8z"/><text x="12" y="16" font-size="7" font-weight="700" text-anchor="middle">10</text>',
+  full: '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>',
+  vol: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>',
+  mute: `<path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16 9l5 6m0-6l-5 6" ${S} stroke-width="2"/>`,
+  next: '<path d="M6 5v14l9-7zM17 5h2v14h-2z"/>',
+  search: `<circle cx="11" cy="11" r="6" ${S} stroke-width="2"/><path d="M16 16l5 5" ${S} stroke-width="2"/>`,
+  home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',
+  tv: `<rect x="3" y="5" width="18" height="12" rx="2" ${S} stroke-width="2"/><path d="M8 21h8" ${S} stroke-width="2"/>`,
+  film: `<rect x="4" y="4" width="16" height="16" rx="2" ${S} stroke-width="2"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16" ${S} stroke-width="1.5"/>`,
+  x: `<path d="M6 6l12 12M18 6L6 18" ${S} stroke-width="2.2"/>`, back: `<path d="M15 5l-7 7 7 7" ${S} stroke-width="2.4"/>`,
+  refresh: '<path d="M17.6 6.4A8 8 0 1 0 20 12h-2a6 6 0 1 1-1.8-4.2L13 11h7V4z"/>',
+};
+const ic = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+$$('[data-ic]').forEach((b) => b.insertAdjacentHTML('afterbegin', ic(b.dataset.ic)));
+
 const grad = (t) => { const h = [...t.name].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 7), a = Math.abs(h) % 360;
   return `linear-gradient(160deg,hsl(${a} 40% 30%),hsl(${(a + 50) % 360} 45% 12%))`; };
 const posterBg = (t) => (t.poster ? `url("${t.poster}") center/cover` : grad(t));
-const wideBg = (t) => (t.backdrop ? `url("${t.backdrop}") center 20%/cover` : t.poster ? `${grad(t)}` : grad(t));
+const wideBg = (t) => (t.backdrop ? `url("${t.backdrop}") center 20%/cover` : grad(t));
 const tag = (f) => (f && f.season != null ? `S${f.season} E${f.episode}` : '');
+const tf = (s) => { s = Math.max(0, s | 0); const h = (s / 3600) | 0, m = ((s % 3600) / 60) | 0, x = s % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
 
 let titles = [], cont = [], view = 'home', q = '', heroId = null, cur = null, curFile = null, lastSave = 0;
 
+/* --- livelli (scheda / player) e tasto Indietro del telefono --- */
+const layers = [];
+const push = (n) => { layers.push(n); history.pushState({ n }, ''); };
+const pop = () => { if (layers.length) history.back(); };
+addEventListener('popstate', () => { const n = layers.pop(); if (n === 'player') hidePlayer(); else if (n === 'modal') hideModal(); });
+
+/* --- catalogo --- */
 async function load() { [titles, cont] = await Promise.all([j('/api/titles'), j('/api/continue')]); render(); }
 
 function card(t, o = {}) {
@@ -114,14 +200,15 @@ function card(t, o = {}) {
   b.className = 'card' + (o.wide ? ' wide' : '');
   b.style.background = o.wide ? wideBg(t) : posterBg(t);
   const pct = o.f && o.f.duration ? Math.round((o.f.position / o.f.duration) * 100) : 0;
-  b.innerHTML = (o.wide ? (t.backdrop ? '' : `<span class="nm">${esc(t.name)}</span>`) + `<span class="lbl">${esc(t.name)}${o.f && tag(o.f) ? ' · ' + tag(o.f) : ''}</span>`
-      : t.poster ? '' : `<span class="nm">${esc(t.name)}</span>`)
+  const has = o.wide ? t.backdrop : t.poster;
+  b.innerHTML = (has ? '' : `<span class="nm">${esc(t.name)}</span>`)
+    + (o.wide ? `<span class="pl">${ic('play')}</span><span class="lbl">${esc(t.name)}${o.f && tag(o.f) ? ' · ' + tag(o.f) : ''}</span>`
+      : has ? `<span class="lbl hov">${esc(t.name)}</span>` : '')
     + (pct ? `<span class="pb"><i style="width:${pct}%"></i></span>` : '');
   b.setAttribute('aria-label', t.name);
   b.onclick = () => openTitle(t.id, o.f && o.f.file_id, !!o.f);
   return b;
 }
-
 function row(name, items) {
   if (!items.length) return null;
   const s = document.createElement('section');
@@ -133,33 +220,42 @@ function row(name, items) {
   s.querySelector('.r').onclick = () => tr.scrollBy({ left: tr.clientWidth * 0.8, behavior: 'smooth' });
   return s;
 }
+function grid(list) {
+  const g = document.createElement('div');
+  if (!list.length) { g.className = 'empty'; g.textContent = 'Nessun risultato.'; return g; }
+  g.className = 'grid'; g.append(...list.map((t) => card(t))); return g;
+}
+const byQ = () => titles.filter((t) => t.name.toLowerCase().includes(q));
 
 function drawHero() {
   const c = cont[0];
   let t = c ? titles.find((x) => x.id === c.title_id) : titles.find((x) => x.id === heroId);
   if (!t) { t = titles[Math.floor(Math.random() * titles.length)]; heroId = t.id; }
-  $('#hero').style.background = wideBg(t);
+  const phone = matchMedia('(max-width:700px)').matches;
+  $('#hero').style.background = phone && t.poster ? posterBg(t) : wideBg(t);
+  $('#hK').textContent = (t.kind === 'series' ? 'SERIE TV' : 'FILM') + (t.year ? ' · ' + t.year : '');
   $('#hT').textContent = t.name;
-  $('#hP').textContent = t.overview || (t.kind === 'series' ? 'Serie TV' : 'Film') + (t.year ? ` · ${t.year}` : '');
-  $('#hPlay').textContent = c ? '▶ Riprendi' : '▶ Riproduci';
+  $('#hP').textContent = t.overview || '';
+  $('#hP').hidden = !t.overview;
+  $('#hPlay').innerHTML = ic('play') + (c ? 'Riprendi' : 'Riproduci');
   $('#hPlay').onclick = () => openTitle(t.id, c && c.file_id, true);
   $('#hInfo').onclick = () => openTitle(t.id);
 }
 
 function render() {
-  const main = $('#main'), hero = $('#hero');
+  const main = $('#main');
   main.replaceChildren();
-  const list = q ? titles.filter((t) => t.name.toLowerCase().includes(q))
-    : view === 'movie' ? titles.filter((t) => t.kind === 'movie')
-    : view === 'series' ? titles.filter((t) => t.kind === 'series') : null;
-  const bare = !!list || !titles.length;
-  hero.hidden = bare; main.classList.toggle('pad', bare); onScroll();
+  const list = q ? byQ() : view === 'movie' ? titles.filter((t) => t.kind === 'movie') : view === 'series' ? titles.filter((t) => t.kind === 'series') : null;
+  const bare = view === 'search' || !!list || !titles.length;
+  $('#hero').hidden = bare; main.classList.toggle('pad', bare); onScroll();
   if (!titles.length) { main.innerHTML = '<div class="empty">La libreria è vuota. Copia i video nella cartella <code>media/</code> e premi “Aggiorna”.</div>'; return; }
-  if (list) {
-    if (!list.length) main.innerHTML = '<div class="empty">Nessun risultato.</div>';
-    else { const g = document.createElement('div'); g.className = 'grid'; g.append(...list.map((t) => card(t))); main.append(g); }
-    return;
+  if (view === 'search') {
+    const inp = document.createElement('input'); inp.id = 'mq'; inp.type = 'search'; inp.placeholder = 'Cerca film e serie TV'; inp.value = q;
+    const res = document.createElement('div'); res.append(grid(q ? byQ() : titles));
+    inp.oninput = (e) => { q = e.target.value.trim().toLowerCase(); res.replaceChildren(grid(q ? byQ() : titles)); };
+    main.append(inp, res); inp.focus(); return;
   }
+  if (list) { main.append(grid(list)); return; }
   drawHero();
   const recent = [...titles].sort((a, b) => b.id - a.id).slice(0, 20);
   main.append(...[
@@ -170,103 +266,145 @@ function render() {
   ].filter(Boolean));
 }
 
-async function openTitle(id, fileId, auto) {
+/* --- scheda dettaglio --- */
+async function showTitle(id, fileId) {
   const t = await j('/api/titles/' + id);
   cur = t;
   const resume = t.files.find((f) => f.id == fileId) || t.files.find((f) => f.position > 10 && f.position < f.duration - 30) || t.files[0];
   const seasons = [...new Set(t.files.map((f) => f.season))];
   const m = $('#modal');
-  m.innerHTML = `<div class="sheet"><button class="x" aria-label="Chiudi">✕</button>
-    <div class="ban"><div><h2>${esc(t.name)}</h2>${resume ? `<button class="btn w" id="pl">▶ ${resume.position > 10 ? 'Riprendi' : 'Riproduci'}${tag(resume) ? ' ' + tag(resume) : ''}</button>` : ''}</div></div>
-    <div class="body"><p class="meta">${t.kind === 'series' ? `Serie TV · ${seasons.length} stagion${seasons.length === 1 ? 'e' : 'i'} · ${t.files.length} episodi` : 'Film' + (t.year ? ` · ${t.year}` : '')}</p>
+  m.innerHTML = `<div class="sheet"><button class="x" aria-label="Chiudi">${ic('x')}</button>
+    <div class="ban"><div><h2 class="disp">${esc(t.name)}</h2>${resume ? `<button class="btn w" id="pl">${ic('play')}${resume.position > 10 ? 'Riprendi' : 'Riproduci'}${tag(resume) ? ' ' + tag(resume) : ''}</button>` : ''}</div></div>
+    <div class="body"><p class="meta">${t.year ? `<b>${t.year}</b> · ` : ''}${t.kind === 'series' ? `Serie TV · ${seasons.length} stagion${seasons.length === 1 ? 'e' : 'i'} · ${t.files.length} episodi` : 'Film'}</p>
     ${t.overview ? `<p>${esc(t.overview)}</p>` : ''}
-    ${t.kind === 'series' ? `<div class="sh"><b>Episodi</b><select id="sel">${seasons.map((s) => `<option value="${s}">Stagione ${s}</option>`).join('')}</select></div><div id="eps"></div>` : ''}</div></div>`;
+    ${t.kind === 'series' ? `<div class="sh"><b>Episodi</b><select id="sel" aria-label="Stagione">${seasons.map((s) => `<option value="${s}">Stagione ${s}</option>`).join('')}</select></div><div id="eps"></div>` : ''}</div></div>`;
   m.querySelector('.ban').style.background = wideBg(t);
-  m.querySelector('.x').onclick = closeModal;
+  m.querySelector('.x').onclick = pop;
   if (resume) m.querySelector('#pl').onclick = () => play(resume.id);
   if (t.kind === 'series') {
-    const sel = $('#sel'), draw = () => {
-      $('#eps').replaceChildren(...t.files.filter((f) => f.season == sel.value).map((f) => {
-        const b = document.createElement('button'); b.className = 'ep';
-        const pct = f.duration ? Math.round((f.position / f.duration) * 100) : 0;
-        b.innerHTML = `<b>${f.episode}</b><span>Episodio ${f.episode}</span>${pct ? `<span class="pb"><i style="width:${pct}%"></i></span>` : ''}`;
-        b.onclick = () => play(f.id);
-        return b;
-      }));
-    };
+    const sel = $('#sel'), draw = () => $('#eps').replaceChildren(...t.files.filter((f) => f.season == sel.value).map((f) => {
+      const b = document.createElement('button'); b.className = 'ep';
+      const pct = f.duration ? Math.round((f.position / f.duration) * 100) : 0;
+      b.innerHTML = `<b>${f.episode}</b><span>Episodio ${f.episode}</span><span class="ic">${ic('play')}</span>${pct ? `<span class="pb"><i style="width:${pct}%"></i></span>` : ''}`;
+      b.onclick = () => play(f.id);
+      return b;
+    }));
     sel.value = resume ? resume.season : seasons[0]; sel.onchange = draw; draw();
   }
+  return resume;
+}
+async function openTitle(id, fileId, auto) {
+  const resume = await showTitle(id, fileId);
+  const m = $('#modal');
+  if (!layers.includes('modal')) push('modal');
   m.classList.add('on'); m.scrollTop = 0; document.body.style.overflow = 'hidden';
   if (auto && resume) play(resume.id);
 }
-function closeModal() { $('#modal').classList.remove('on'); document.body.style.overflow = ''; }
-$('#modal').onclick = (e) => { if (e.target.id === 'modal') closeModal(); };
+function hideModal() { $('#modal').classList.remove('on'); document.body.style.overflow = ''; load(); }
+$('#modal').onclick = (e) => { if (e.target.id === 'modal') pop(); };
 
+/* --- player --- */
+const v = $('#vid'), P = $('#player');
+let idleT, fbT, dragging = false, lastTap = 0;
+const setPP = () => ($('#pp').innerHTML = ic(v.paused ? 'play' : 'pause'));
+const toggle = () => (v.paused ? v.play() : v.pause());
+const poke = () => { P.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => { if (!v.paused) P.classList.add('idle'); }, 3500); };
+function skip(d) {
+  v.currentTime = Math.min(v.duration || 1e9, Math.max(0, v.currentTime + d));
+  const e = $('#sfb'); e.textContent = (d > 0 ? '+' : '−') + Math.abs(d) + ' s'; e.style.left = d > 0 ? '75%' : '25%';
+  e.classList.add('show'); clearTimeout(fbT); fbT = setTimeout(() => e.classList.remove('show'), 600);
+}
+function nextEp() {
+  const fs = cur.files, i = fs.indexOf(curFile);
+  if (fs[i + 1]) { fs[i + 1].position = 0; play(fs[i + 1].id); return true; }
+  return false;
+}
 function play(id) {
-  const f = cur.files.find((x) => x.id == id), v = $('#vid');
+  const f = cur.files.find((x) => x.id == id);
   curFile = f;
   v.src = '/stream/' + f.id;
   v.onloadedmetadata = () => { if (f.position > 10 && f.position < v.duration - 30) v.currentTime = f.position; };
   $('#pT').textContent = cur.name + (tag(f) ? ' · ' + tag(f) : '');
-  $('#player').classList.add('on');
-  v.play().catch(() => {});
-  poke();
+  $('#nx').hidden = !cur.files[cur.files.indexOf(f) + 1];
+  if (!layers.includes('player')) {
+    push('player'); P.classList.add('on');
+    if (matchMedia('(pointer:coarse)').matches) {
+      try { const r = P.requestFullscreen && P.requestFullscreen(); r && r.then(() => screen.orientation.lock('landscape')).catch(() => {}); } catch {}
+    }
+  }
+  setPP(); v.play().catch(() => {}); poke();
 }
 function save(force) {
-  const v = $('#vid');
   if (!curFile || !v.duration || (!force && Date.now() - lastSave < 5000)) return;
   lastSave = Date.now();
   curFile.position = v.currentTime; curFile.duration = v.duration;
   fetch('/api/progress/' + curFile.id, { method: 'PUT', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ position: v.currentTime, duration: v.duration }), keepalive: true });
 }
-function closePlayer() {
-  save(true);
-  const v = $('#vid'); v.pause(); v.removeAttribute('src'); v.load();
-  $('#player').classList.remove('on');
-  if (document.fullscreenElement) document.exitFullscreen();
-  curFile = null; closeModal(); load();
+function hidePlayer() {
+  save(true); v.pause(); v.removeAttribute('src'); v.load();
+  P.classList.remove('on');
+  try { if (document.fullscreenElement) document.exitFullscreen(); screen.orientation.unlock(); } catch {}
+  curFile = null;
+  if ($('#modal').classList.contains('on')) showTitle(cur.id); // aggiorna avanzamento
+  load();
 }
-$('#vid').ontimeupdate = () => save(false);
-$('#vid').onpause = () => save(true);
-$('#vid').onended = () => {
-  save(true);
-  const fs = cur.files, i = fs.indexOf(curFile);
-  if (fs[i + 1]) { fs[i + 1].position = 0; play(fs[i + 1].id); } else closePlayer();
-};
-$('#back').onclick = closePlayer;
-let idleT;
-function poke() { const p = $('#player'); p.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => { if (!$('#vid').paused) p.classList.add('idle'); }, 3000); }
-$('#player').onmousemove = poke;
-
-document.addEventListener('keydown', (e) => {
-  const v = $('#vid');
-  if ($('#player').classList.contains('on')) {
-    if (e.key === 'Escape') closePlayer();
-    else if (e.key === 'ArrowRight') v.currentTime += 10;
-    else if (e.key === 'ArrowLeft') v.currentTime -= 10;
-    else if (e.key === 'f') document.fullscreenElement ? document.exitFullscreen() : $('#player').requestFullscreen();
-    else if (e.key === ' ' && e.target !== v) { e.preventDefault(); v.paused ? v.play() : v.pause(); }
+v.ontimeupdate = () => { save(false); if (!dragging) $('#seek').value = v.duration ? (v.currentTime / v.duration) * 1000 : 0; $('#tc').textContent = tf(v.currentTime); };
+v.ondurationchange = () => ($('#td').textContent = tf(v.duration || 0));
+v.onpause = () => { save(true); setPP(); };
+v.onplay = setPP;
+v.onended = () => { save(true); if (!nextEp()) pop(); };
+$('#seek').oninput = (e) => { dragging = true; $('#tc').textContent = tf((e.target.value / 1000) * v.duration); };
+$('#seek').onchange = (e) => { v.currentTime = (e.target.value / 1000) * v.duration; dragging = false; };
+$('#vol').oninput = (e) => { v.volume = e.target.value; v.muted = false; };
+v.onvolumechange = () => ($('#vl').innerHTML = ic(v.muted || v.volume === 0 ? 'mute' : 'vol'));
+$('#vl').onclick = () => (v.muted = !v.muted);
+$('#pp').onclick = toggle; $('#b10').onclick = () => skip(-10); $('#f10').onclick = () => skip(10);
+$('#nx').onclick = () => { save(true); nextEp(); };
+$('#back').onclick = pop;
+$('#fs').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else if (P.requestFullscreen) P.requestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); };
+P.onmousemove = poke;
+P.addEventListener('pointerdown', () => { if (!P.classList.contains('idle')) poke(); });
+// tocco: mostra/nascondi i controlli; doppio tocco ai lati: ±10 s. Mouse: clic = pausa
+v.addEventListener('pointerup', (e) => {
+  const now = Date.now(), x = e.clientX / innerWidth;
+  if (e.pointerType === 'mouse') { toggle(); return; }
+  if (now - lastTap < 320 && (x < 0.35 || x > 0.65)) { skip(x < 0.5 ? -10 : 10); lastTap = 0; return; }
+  lastTap = now;
+  if (P.classList.contains('idle')) poke(); else P.classList.add('idle');
+});
+addEventListener('keydown', (e) => {
+  if (P.classList.contains('on')) {
+    if (e.key === 'Escape') pop();
+    else if (e.key === 'ArrowRight') skip(10);
+    else if (e.key === 'ArrowLeft') skip(-10);
+    else if (e.key === 'f') $('#fs').click();
+    else if (e.key === 'm') v.muted = !v.muted;
+    else if (e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); toggle(); }
     poke();
-  } else if (e.key === 'Escape') closeModal();
+  } else if (e.key === 'Escape' && $('#modal').classList.contains('on')) pop();
 });
 
-document.querySelectorAll('.tabs button').forEach((b) => (b.onclick = () => {
-  view = b.dataset.v; q = ''; $('#q').value = '';
-  document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b));
-  render(); scrollTo(0, 0);
-}));
-let tm; $('#q').oninput = (e) => { clearTimeout(tm); tm = setTimeout(() => { q = e.target.value.trim().toLowerCase(); render(); }, 150); };
+/* --- navigazione --- */
+function setView(vw) {
+  view = vw; q = ''; $('#sq').value = ''; $('#sbox').classList.remove('open');
+  $$('[data-v]').forEach((b) => b.classList.toggle('on', b.dataset.v === vw));
+  render(); if (vw !== 'search') scrollTo(0, 0);
+}
+$$('[data-v]').forEach((b) => (b.onclick = () => setView(b.dataset.v)));
+$('#sbtn').onclick = () => { $('#sbox').classList.add('open'); $('#sq').focus(); };
+$('#sq').onblur = () => { if (!$('#sq').value) $('#sbox').classList.remove('open'); };
+let tm; $('#sq').oninput = (e) => { clearTimeout(tm); tm = setTimeout(() => { q = e.target.value.trim().toLowerCase(); render(); }, 150); };
 function onScroll() { $('#nav').classList.toggle('solid', scrollY > 40 || $('#hero').hidden); }
 addEventListener('scroll', onScroll);
 $('#scan').onclick = async () => {
-  const b = $('#scan'); b.disabled = true; b.textContent = 'Scansione…';
+  const b = $('#scan'), l = b.querySelector('.lb'); b.disabled = true; l.textContent = 'Scansione…';
   const r = await j('/api/scan', { method: 'POST' });
-  b.disabled = false; b.textContent = r.error ? 'Errore' : `${r.titles} titoli`;
-  setTimeout(() => (b.textContent = 'Aggiorna'), 2500);
+  b.disabled = false; l.textContent = r.error ? 'Errore' : `${r.titles} titoli`;
+  setTimeout(() => (l.textContent = 'Aggiorna'), 2500);
   load();
 };
-load();
+setPP(); load();
 </script>
 </body>
 </html>

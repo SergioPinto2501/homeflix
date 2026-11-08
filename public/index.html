@@ -8,6 +8,7 @@
 <style>
 :root{--bg:#141414;--panel:#181818;--dim:#b3b3b3;--red:#e50914;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:#fff;font:16px/1.45 "Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;overflow-x:hidden}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
 .i{width:1.5em;height:1.5em;fill:currentColor;vertical-align:middle;flex:none}
@@ -25,7 +26,7 @@ nav.solid{background:var(--bg)}
 .sbox.open input{width:min(14rem,40vw);padding:.2rem .4rem}
 #scan{display:flex;align-items:center;gap:.4rem;color:var(--dim);font-size:.9rem}#scan:hover{color:#fff}
 .bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:25;justify-content:space-around;background:#0b0b0bf5;border-top:1px solid #ffffff14;padding:.3rem 0 calc(.3rem + var(--sb))}
-.bar button{display:flex;flex-direction:column;align-items:center;gap:.1rem;font-size:.68rem;color:var(--dim);min-width:4.5rem;padding:.35rem}
+.bar button{display:flex;flex-direction:column;align-items:center;gap:.1rem;font-size:.68rem;color:var(--dim);flex:1;min-width:0;padding:.35rem}
 .bar button.on{color:#fff}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.55rem 1.5rem;border-radius:4px;font-weight:700;font-size:1.05rem;min-height:2.75rem}
 .btn.w{background:#fff;color:#000}.btn.w:hover{background:#ffffffbf}
@@ -100,9 +101,52 @@ select{background:#242424;color:inherit;border:1px solid #fff4;border-radius:4px
 #vol{width:6rem;accent-color:#fff}
 #sfb{position:absolute;top:40%;background:#000a;padding:.5rem 1rem;border-radius:2rem;opacity:0;transition:opacity .2s;pointer-events:none;transform:translateX(-50%)}
 #sfb.show{opacity:1}
+.pg{padding:0 4%;max-width:900px}.ph{font-size:1.7rem;margin:0 0 .4rem}
+.hint{color:var(--dim);font-size:.9rem;margin:0 0 1rem}
+.box{background:#1f1f1f;border-radius:8px;padding:1rem;margin:0 0 1.2rem}.box h3{margin:0 0 .6rem}
+.inp,.box select{width:100%;padding:.7rem .9rem;border-radius:6px;border:0;background:#333;color:#fff;font:inherit;outline:0;margin-bottom:.6rem}
+.li{display:flex;gap:.8rem;align-items:center;padding:.7rem 0;border-bottom:1px solid #ffffff14}
+.li img{width:46px;aspect-ratio:2/3;object-fit:cover;border-radius:3px;background:#333;flex:none}
+.li .t{flex:1;min-width:0}.li .t b{display:block}.li .t small{color:var(--dim)}
+.btn.s{padding:.3rem .9rem;font-size:.9rem;min-height:2.2rem}
+.tag{display:inline-block;background:#46d36933;color:#46d369;border-radius:3px;padding:0 .4rem;font-size:.75rem;margin-left:.4rem}
+.prov{margin-top:.4rem;font-size:.85rem;color:var(--dim)}.prov img{width:28px;height:28px;border-radius:6px;margin:.2rem .3rem 0 0;vertical-align:middle}
+.st{font-size:.8rem;padding:.1rem .5rem;border-radius:3px;background:#333;white-space:nowrap}.st.ok{background:#46d36933;color:#46d369}.st.er{background:#e5091433;color:#ff6b6b}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin:0 4% .8rem}
+.chip{padding:.35rem .95rem;border-radius:2rem;background:#2b2b2b;font-size:.9rem}.chip:hover{background:#3a3a3a}.chip.on{background:#fff;color:#000;font-weight:700}
+.pg.wide{max-width:none;padding:0}.pg.wide>.ph{margin:0 4% .8rem}.pg.wide .pg{padding:0 4%}
+@keyframes fade{from{opacity:0}}@keyframes up2{from{opacity:0;transform:translateY(16px)}}@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.95)}}
+@keyframes shim{to{background-position:-200% 0}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes ind{0%{margin-left:-40%}100%{margin-left:100%}}
+@keyframes toastin{from{opacity:0;transform:translateY(12px)}}@keyframes pop2{50%{transform:scale(1.25)}}
+.view{animation:up2 .4s ease-out}
+.card.pop{animation:pop .5s backwards}
+.row.rv{opacity:0;transform:translateY(26px);transition:opacity .6s,transform .6s}.row.rv.in{opacity:1;transform:none}
+.hero.go{animation:fade .8s}.hero.go .hk,.hero.go h1,.hero.go p,.hero.go .acts{animation:up2 .7s backwards}
+.hero.go h1{animation-delay:.1s}.hero.go p{animation-delay:.2s}.hero.go .acts{animation-delay:.3s}
+.tabs button{position:relative;padding-bottom:.2rem}.tabs button::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--red);transform:scaleX(0);transition:transform .25s}.tabs button.on::after{transform:scaleX(1)}
+.btn,.chip,.bar button{transition:transform .15s,background .2s}.btn:active,.chip:active,.bar button:active{transform:scale(.95)}
+.bar button.on .i{animation:pop2 .35s}
+.card:hover{box-shadow:0 10px 30px #000d}
+#modal.on{animation:fade .2s}#player.on{animation:fade .25s}
+.skrow{display:flex;gap:.45rem;padding:0 4%;margin-bottom:1.6rem;overflow:hidden}.skel{display:block;flex:none;width:clamp(105px,14vw,190px);aspect-ratio:2/3;border-radius:4px;background:linear-gradient(90deg,#222 25%,#2e2e2e 50%,#222 75%);background-size:200% 100%;animation:shim 1.3s infinite}
+#scan.busy .i{animation:spin 1s linear infinite}
+.spin{display:inline-block;width:1.1rem;height:1.1rem;border:2px solid #fff4;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex:none}
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(1.2rem + var(--sb));z-index:60;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none}
+.toast{background:#262626;border-left:4px solid #888;padding:.6rem 1rem;border-radius:6px;box-shadow:0 6px 20px #000a;animation:toastin .3s;max-width:90vw;transition:opacity .3s}.toast.ok{border-color:#46d369}.toast.er{border-color:var(--red)}.toast.out{opacity:0}
+#act{position:fixed;right:1rem;bottom:1rem;z-index:26;display:flex;align-items:center;gap:.6rem;background:#262626;border-radius:2rem;padding:.55rem 1rem;box-shadow:0 6px 20px #000a;animation:toastin .3s}#act[hidden]{display:none}
+.steps{display:flex;gap:.6rem;margin:0 0 1.2rem;flex-wrap:wrap}.steps div{flex:1;min-width:8rem;display:flex;align-items:center;gap:.6rem;background:#1f1f1f;border-radius:8px;padding:.6rem .8rem;font-size:.9rem}.steps i{font-style:normal;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--red);display:grid;place-items:center;font-weight:700;flex:none}
+.seg{display:flex;background:#1f1f1f;border-radius:10px;padding:.25rem;margin:0 0 1rem}.seg button{flex:1;padding:.65rem .5rem;border-radius:8px;font-weight:700;color:var(--dim);transition:background .25s,color .25s}.seg button.on{background:#fff;color:#000}
+.drop{display:flex;flex-direction:column;align-items:center;gap:.3rem;text-align:center;border:2px dashed #ffffff40;border-radius:12px;padding:2rem 1rem;cursor:pointer;transition:border-color .2s,background .2s,transform .2s}.drop:hover,.drop.over{border-color:var(--red);background:#e5091414}.drop.over{transform:scale(1.015)}.drop .i{width:2.6rem;height:2.6rem;color:var(--red)}.drop span{color:var(--dim);font-size:.9rem}
+.opt{margin:1rem 0 .6rem}.opt label{display:block;font-weight:700;margin-bottom:.3rem}.opt small{color:var(--dim)}.opt select{margin-bottom:.3rem}
+.fi{background:#1f1f1f;border-radius:8px;padding:.7rem .9rem;margin:.5rem 0;animation:up2 .3s;overflow:hidden}.fi .n{display:flex;justify-content:space-between;gap:.6rem}.fi .n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fi .s{font-size:.8rem;color:var(--dim)}.fi.done .s{color:#46d369}.fi.err .s{color:#ff6b6b}.fi .rm{color:var(--dim)}
+.pbar{height:5px;background:#ffffff1f;border-radius:3px;overflow:hidden;margin-top:.4rem}.pbar i{display:block;height:100%;width:0;background:var(--red);border-radius:3px;transition:width .3s}.pbar.ind i{animation:ind 1.4s ease-in-out infinite}
+.sub{margin:1.6rem 0 .6rem;font-size:1.2rem}.live{font-size:.8rem;background:var(--red);border-radius:2rem;padding:.05rem .6rem;margin-left:.4rem}.live:empty{display:none}
+.job{display:flex;gap:.8rem;align-items:center;background:#1f1f1f;border-radius:8px;padding:.7rem .9rem;margin:.5rem 0;animation:up2 .3s}.job .ji{flex:none;display:grid;place-items:center;width:1.8rem}.job.ok .ji{color:#46d369}.job.er .ji{color:#ff6b6b}.job .t{flex:1;min-width:0}.job .t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.job .t small{color:var(--dim)}
 @media(hover:none){.arrow,.vl{display:none}.card:hover{transform:none;box-shadow:none}.hov{display:none}}
 @media(max-width:700px){
- nav{gap:.8rem}.tabs,.sbox,#scan .lb{display:none}.logo{font-size:1.6rem}.bar{display:flex}
+ .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.chip{flex:none}
+ #act{bottom:calc(4.7rem + var(--sb))}#toasts{bottom:calc(5rem + var(--sb))}
+ nav{gap:.8rem}.tabs,.sbox input,#scan .lb{display:none}.logo{font-size:1.6rem}.bar{display:flex}
  main{padding-bottom:6rem}
  .hero{height:74vh;justify-content:center;text-align:center;padding:0 6% 14%}
  .hero>div{max-width:none;width:100%}.hero p{-webkit-line-clamp:2;font-size:.95rem}.acts{justify-content:center}.acts .btn{flex:1}
@@ -121,6 +165,9 @@ select{background:#242424;color:inherit;border:1px solid #fff4;border-radius:4px
     <button class="on" data-v="home">Home</button>
     <button data-v="series">Serie TV</button>
     <button data-v="movie">Film</button>
+    <button data-v="explore">Esplora</button>
+    <button data-v="list">La mia lista</button>
+    <button data-v="add">Aggiungi</button>
   </div>
   <span class="sp"></span>
   <div class="sbox" id="sbox"><button id="sbtn" data-ic="search" aria-label="Cerca"></button><input id="sq" type="search" placeholder="Titoli" aria-label="Cerca"></div>
@@ -130,14 +177,16 @@ select{background:#242424;color:inherit;border:1px solid #fff4;border-radius:4px
   <p class="hk" id="hK"></p><h1 class="disp" id="hT"></h1><p id="hP"></p>
   <div class="acts"><button class="btn w" id="hPlay"></button><button class="btn g" id="hInfo">Altre info</button></div>
 </div></header>
-<main id="main"></main>
+<main id="main" class="pad"><div class="skrow"><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i></div><div class="skrow"><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i><i class="skel"></i></div></main>
 <div class="bar" id="bar">
   <button class="on" data-v="home" data-ic="home"><span>Home</span></button>
-  <button data-v="series" data-ic="tv"><span>Serie TV</span></button>
-  <button data-v="movie" data-ic="film"><span>Film</span></button>
-  <button data-v="search" data-ic="search"><span>Cerca</span></button>
+  <button data-v="explore" data-ic="grid"><span>Esplora</span></button>
+  <button data-v="list" data-ic="list"><span>Lista</span></button>
+  <button data-v="add" data-ic="plus"><span>Aggiungi</span></button>
 </div>
 <div id="modal" role="dialog" aria-modal="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<button id="act" hidden><i class="spin"></i><b></b></button>
 <div id="player">
   <video id="vid" playsinline></video>
   <div class="pui">
@@ -171,6 +220,9 @@ const IC = {
   tv: `<rect x="3" y="5" width="18" height="12" rx="2" ${S} stroke-width="2"/><path d="M8 21h8" ${S} stroke-width="2"/>`,
   film: `<rect x="4" y="4" width="16" height="16" rx="2" ${S} stroke-width="2"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16" ${S} stroke-width="1.5"/>`,
   x: `<path d="M6 6l12 12M18 6L6 18" ${S} stroke-width="2.2"/>`, back: `<path d="M15 5l-7 7 7 7" ${S} stroke-width="2.4"/>`,
+  grid: '<path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/>',
+  list: `<path d="M4 6h16M4 12h16M4 18h10" ${S} stroke-width="2"/>`, plus: `<path d="M12 5v14M5 12h14" ${S} stroke-width="2.2"/>`,
+  check: `<path d="M5 12l5 5 9-10" ${S} stroke-width="2.4"/>`,
   refresh: '<path d="M17.6 6.4A8 8 0 1 0 20 12h-2a6 6 0 1 1-1.8-4.2L13 11h7V4z"/>',
 };
 const ic = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
@@ -184,6 +236,12 @@ const tag = (f) => (f && f.season != null ? `S${f.season} E${f.episode}` : '');
 const tf = (s) => { s = Math.max(0, s | 0); const h = (s / 3600) | 0, m = ((s % 3600) / 60) | 0, x = s % 60;
   return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
 
+let animOn = true, renderedView = null, onJobs = null;
+const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => es.forEach((e) => {
+  if (!e.isIntersecting) return;
+  io.unobserve(e.target); e.target.classList.add('in');
+  e.target.querySelectorAll('.card').forEach((c, i) => { c.style.animationDelay = Math.min(i, 12) * 40 + 'ms'; c.classList.add('pop'); });
+}), { threshold: 0.1 }) : null;
 let titles = [], cont = [], view = 'home', q = '', heroId = null, cur = null, curFile = null, lastSave = 0;
 
 /* --- livelli (scheda / player) e tasto Indietro del telefono --- */
@@ -193,7 +251,10 @@ const pop = () => { if (layers.length) history.back(); };
 addEventListener('popstate', () => { const n = layers.pop(); if (n === 'player') hidePlayer(); else if (n === 'modal') hideModal(); });
 
 /* --- catalogo --- */
-async function load() { [titles, cont] = await Promise.all([j('/api/titles'), j('/api/continue')]); render(); }
+// una sola scheda per titolo (il più recente viene per primo), anche se il nome ha piccole varianti
+const normName = (n) => String(n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '');
+const uniqCont = (a) => { const k = new Set(); return Array.isArray(a) ? a.filter((f) => { const n = normName(f.name); return !k.has(n) && k.add(n); }) : []; };
+async function load() { [titles, cont] = await Promise.all([j('/api/titles'), j('/api/continue')]); cont = uniqCont(cont); render(); }
 
 function card(t, o = {}) {
   const b = document.createElement('button');
@@ -212,7 +273,7 @@ function card(t, o = {}) {
 function row(name, items) {
   if (!items.length) return null;
   const s = document.createElement('section');
-  s.className = 'row';
+  s.className = 'row' + (io && animOn ? ' rv' : ''); if (io && animOn) io.observe(s);
   s.innerHTML = `<h2>${esc(name)}</h2><div class="rw"><button class="arrow l" aria-label="Indietro">‹</button><div class="track"></div><button class="arrow r" aria-label="Avanti">›</button></div>`;
   const tr = s.querySelector('.track');
   tr.append(...items);
@@ -223,7 +284,9 @@ function row(name, items) {
 function grid(list) {
   const g = document.createElement('div');
   if (!list.length) { g.className = 'empty'; g.textContent = 'Nessun risultato.'; return g; }
-  g.className = 'grid'; g.append(...list.map((t) => card(t))); return g;
+  g.className = 'grid'; g.append(...list.map((t) => card(t)));
+  if (animOn) g.querySelectorAll('.card').forEach((c, i) => { c.style.animationDelay = Math.min(i, 20) * 30 + 'ms'; c.classList.add('pop'); });
+  return g;
 }
 const byQ = () => titles.filter((t) => t.name.toLowerCase().includes(q));
 
@@ -240,11 +303,16 @@ function drawHero() {
   $('#hPlay').innerHTML = ic('play') + (c ? 'Riprendi' : 'Riproduci');
   $('#hPlay').onclick = () => openTitle(t.id, c && c.file_id, true);
   $('#hInfo').onclick = () => openTitle(t.id);
+  if (animOn) { const h = $('#hero'); h.classList.remove('go'); void h.offsetWidth; h.classList.add('go'); }
 }
 
 function render() {
   const main = $('#main');
-  main.replaceChildren();
+  onJobs = null; main.replaceChildren();
+  animOn = renderedView !== view; renderedView = view;
+  if (animOn) { main.classList.remove('view'); void main.offsetWidth; main.classList.add('view'); }
+  updatePill();
+  if (view === 'list' || view === 'add' || view === 'explore') { $('#hero').hidden = true; main.classList.add('pad'); onScroll(); (view === 'list' ? renderList : view === 'add' ? renderAdd : renderExplore)(main); return; }
   const list = q ? byQ() : view === 'movie' ? titles.filter((t) => t.kind === 'movie') : view === 'series' ? titles.filter((t) => t.kind === 'series') : null;
   const bare = view === 'search' || !!list || !titles.length;
   $('#hero').hidden = bare; main.classList.toggle('pad', bare); onScroll();
@@ -270,15 +338,18 @@ function render() {
 async function showTitle(id, fileId) {
   const t = await j('/api/titles/' + id);
   cur = t;
-  const resume = t.files.find((f) => f.id == fileId) || t.files.find((f) => f.position > 10 && f.position < f.duration - 30) || t.files[0];
+  const last = t.files.filter((f) => f.updated_at).sort((x, y) => y.updated_at - x.updated_at)[0];
+  const lastOpen = last && last.position > 10 && last.position < last.duration - 30;
+  const resume = t.files.find((f) => f.id == fileId) || (last && (lastOpen ? last : t.files[t.files.indexOf(last) + 1] || last)) || t.files[0];
   const seasons = [...new Set(t.files.map((f) => f.season))];
   const m = $('#modal');
   m.innerHTML = `<div class="sheet"><button class="x" aria-label="Chiudi">${ic('x')}</button>
     <div class="ban"><div><h2 class="disp">${esc(t.name)}</h2>${resume ? `<button class="btn w" id="pl">${ic('play')}${resume.position > 10 ? 'Riprendi' : 'Riproduci'}${tag(resume) ? ' ' + tag(resume) : ''}</button>` : ''}</div></div>
-    <div class="body"><p class="meta">${t.year ? `<b>${t.year}</b> · ` : ''}${t.kind === 'series' ? `Serie TV · ${seasons.length} stagion${seasons.length === 1 ? 'e' : 'i'} · ${t.files.length} episodi` : 'Film'}</p>
+    <div class="body"><p class="meta">${t.year ? `<b>${t.year}</b> · ` : ''}${t.kind === 'series' ? `Serie TV · ${seasons.length} stagion${seasons.length === 1 ? 'e' : 'i'} · ${t.files.length} episodi` : 'Film'}${t.genres ? ' · ' + esc(t.genres.split(',').join(', ')) : ''}</p>
     ${t.overview ? `<p>${esc(t.overview)}</p>` : ''}
     ${t.kind === 'series' ? `<div class="sh"><b>Episodi</b><select id="sel" aria-label="Stagione">${seasons.map((s) => `<option value="${s}">Stagione ${s}</option>`).join('')}</select></div><div id="eps"></div>` : ''}</div></div>`;
   m.querySelector('.ban').style.background = wideBg(t);
+  if (t.tmdb_id) { const d = document.createElement('div'); d.className = 'prov'; m.querySelector('.body').append(d); loadProv(t.kind, t.tmdb_id, d); }
   m.querySelector('.x').onclick = pop;
   if (resume) m.querySelector('#pl').onclick = () => play(resume.id);
   if (t.kind === 'series') {
@@ -392,18 +463,226 @@ function setView(vw) {
   render(); if (vw !== 'search') scrollTo(0, 0);
 }
 $$('[data-v]').forEach((b) => (b.onclick = () => setView(b.dataset.v)));
-$('#sbtn').onclick = () => { $('#sbox').classList.add('open'); $('#sq').focus(); };
+$('#sbtn').onclick = () => { if (matchMedia('(max-width:700px)').matches) return setView('search'); $('#sbox').classList.add('open'); $('#sq').focus(); };
 $('#sq').onblur = () => { if (!$('#sq').value) $('#sbox').classList.remove('open'); };
 let tm; $('#sq').oninput = (e) => { clearTimeout(tm); tm = setTimeout(() => { q = e.target.value.trim().toLowerCase(); render(); }, 150); };
 function onScroll() { $('#nav').classList.toggle('solid', scrollY > 40 || $('#hero').hidden); }
 addEventListener('scroll', onScroll);
 $('#scan').onclick = async () => {
-  const b = $('#scan'), l = b.querySelector('.lb'); b.disabled = true; l.textContent = 'Scansione…';
+  const b = $('#scan'), l = b.querySelector('.lb'); b.disabled = true; b.classList.add('busy'); l.textContent = 'Scansione…';
   const r = await j('/api/scan', { method: 'POST' });
-  b.disabled = false; l.textContent = r.error ? 'Errore' : `${r.titles} titoli`;
+  b.disabled = false; b.classList.remove('busy'); l.textContent = r.error ? 'Errore' : `${r.titles} titoli`;
   setTimeout(() => (l.textContent = 'Aggiorna'), 2500);
   load();
 };
+
+/* --- lista desideri, aggiungere video, catalogo libero --- */
+let jobT;
+const jpost = (u, b) => j(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
+const LANGS = '<option value="ita">Audio: italiano</option><option value="eng">Audio: inglese</option><option value="fre">Audio: francese</option><option value="ger">Audio: tedesco</option><option value="spa">Audio: spagnolo</option><option value="jpn">Audio: giapponese</option>';
+function loadProv(kind, id, el) {
+  j(`/api/providers?kind=${kind}&tmdb_id=${id}`).then((p) => {
+    if (p.error) { el.textContent = p.error; return; }
+    const g = (l, a) => (a.length ? `<div>${l}: ${a.map((x) => (x.logo ? `<img src="${x.logo}" alt="${esc(x.name)}" title="${esc(x.name)}">` : esc(x.name))).join('')}</div>` : '');
+    const h = g('Streaming', p.flatrate) + g('Noleggio', p.rent) + g('Acquisto', p.buy);
+    el.innerHTML = h ? h + `<small>Disponibilità in ${p.region} (dati JustWatch)</small>` : `Non disponibile su piattaforme in ${p.region}.`;
+  }).catch(() => (el.textContent = ''));
+}
+function liRow(img, title, sub, right) {
+  const r = document.createElement('div'); r.className = 'li';
+  r.innerHTML = `${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : '<img alt="">'}<div class="t"><b>${esc(title)}</b><small>${sub}</small><div class="x2"></div></div>`;
+  if (right) r.append(right);
+  return r;
+}
+const btn = (txt, fn, cls = 'g') => { const b = document.createElement('button'); b.className = 'btn s ' + cls; b.textContent = txt; b.onclick = fn; return b; };
+
+function renderList(main) {
+  main.innerHTML = `<div class="pg"><h2 class="ph disp">La mia lista</h2><p class="hint">Cerca un film o una serie che vuoi avere: la salvi qui e vedi su quali piattaforme è disponibile.</p>
+    <div class="box"><input id="ws" class="inp" type="search" placeholder="Cerca un titolo" aria-label="Cerca un titolo"><div id="wr"></div></div><div id="wl"></div></div>`;
+  const draw = async () => {
+    const l = await j('/api/wishlist'), box = $('#wl');
+    box.replaceChildren(...(l.length ? l.map((w) => {
+      const r = liRow(w.poster, w.name, `${w.kind === 'series' ? 'Serie TV' : 'Film'}${w.year ? ' · ' + w.year : ''}${w.in_library ? '<span class="tag">In libreria</span>' : ''}`, btn('Rimuovi', async () => { await fetch('/api/wishlist/' + w.id, { method: 'DELETE' }); draw(); }));
+      loadProv(w.kind, w.tmdb_id, r.querySelector('.x2')); r.querySelector('.x2').className = 'prov';
+      return r;
+    }) : [Object.assign(document.createElement('div'), { className: 'empty', textContent: 'La lista è vuota.' })]));
+  };
+  let t2; $('#ws').oninput = (e) => { clearTimeout(t2); t2 = setTimeout(async () => {
+    const q2 = e.target.value.trim(); if (!q2) { $('#wr').replaceChildren(); return; }
+    const r = await j('/api/discover?q=' + encodeURIComponent(q2));
+    $('#wr').replaceChildren(...(r.error ? [Object.assign(document.createElement('p'), { className: 'hint', textContent: r.error })]
+      : r.map((x) => liRow(x.poster, x.name, `${x.kind === 'series' ? 'Serie TV' : 'Film'}${x.year ? ' · ' + x.year : ''}`, btn('Aggiungi', async () => { await jpost('/api/wishlist', x); toast('Aggiunto alla lista', 'ok'); $('#ws').value = ''; $('#wr').replaceChildren(); draw(); }, 'w')))));
+  }, 300); };
+  draw();
+}
+
+const addState = { tab: 'up', genre: '', q: '' };
+const VID_RE = /\.(avi|mkv|mp4|m4v|mov|wmv|asf|flv|mpg|mpeg|ts|m2ts|mts|vob|webm|divx|3gp|ogm|ogv|rmvb)$/i;
+const fmtSize = (b) => (b > 1e9 ? (b / 1e9).toFixed(1) + ' GB' : Math.max(1, Math.round(b / 1e6)) + ' MB');
+let jobList = []; const seen = {};
+
+function toast(msg, kind = '') {
+  const d = document.createElement('div'); d.className = 'toast ' + kind; d.textContent = msg; $('#toasts').append(d);
+  setTimeout(() => { d.classList.add('out'); setTimeout(() => d.remove(), 300); }, 3500);
+}
+async function refreshData() { try { [titles, cont] = await Promise.all([j('/api/titles'), j('/api/continue')]); cont = uniqCont(cont); } catch {} }
+const isActive = (x) => x.status !== 'completato' && x.status !== 'errore';
+function updatePill() {
+  const n = jobList.filter(isActive).length;
+  $('#act').hidden = !n || view === 'add';
+  $('#act b').textContent = n === 1 ? '1 attività in corso' : `${n} attività in corso`;
+}
+async function watchJobs() {
+  try { jobList = await j('/api/jobs'); } catch { return; }
+  let fresh = false;
+  for (const x of jobList) {
+    const was = seen[x.id]; seen[x.id] = x.status;
+    if (was && was !== x.status) {
+      if (x.status === 'completato') { toast(`“${x.label}” è ora in libreria`, 'ok'); fresh = true; }
+      else if (x.status === 'errore') toast(`Non riuscito: ${x.label}`, 'er');
+    }
+  }
+  if (fresh) refreshData();
+  updatePill();
+  if (onJobs) onJobs(jobList);
+}
+$('#act').onclick = () => setView('add');
+setInterval(watchJobs, 2500); watchJobs();
+
+function drawJobs(js) {
+  const box = $('#jobs'); if (!box) return;
+  const n = js.filter(isActive).length;
+  $('#live').textContent = n ? `${n} in corso` : '';
+  box.replaceChildren(...(js.length ? js.map((x) => {
+    const st = x.status === 'completato' ? 'ok' : x.status === 'errore' ? 'er' : 'run', pc = (/(\d+)%/.exec(x.detail || '') || [])[1];
+    const r = document.createElement('div'); r.className = 'job ' + st;
+    r.innerHTML = `<span class="ji">${st === 'ok' ? ic('check') : st === 'er' ? ic('x') : '<i class="spin"></i>'}</span>
+      <div class="t"><b>${esc(x.label)}</b><small>${esc(x.detail || (st === 'run' ? x.status : 'Completato'))}</small>${st === 'run' ? `<div class="pbar ${pc ? '' : 'ind'}"><i style="width:${pc || 40}%"></i></div>` : ''}</div>
+      <span class="st ${st}">${x.status}</span>`;
+    return r;
+  }) : [Object.assign(document.createElement('p'), { className: 'hint', textContent: 'Nessuna attività: quando aggiungi un video lo vedi qui, passo dopo passo.' })]));
+  if (js.some((x) => x.status === 'completato')) box.append(btn('Vai alla libreria', () => setView('home'), 'w'));
+}
+
+const up = (f, row, lang) => new Promise((done) => {
+  const bar = row.querySelector('.pbar i'), st = row.querySelector('.s');
+  const x = new XMLHttpRequest();
+  x.open('POST', `/api/upload?lang=${lang}&name=${encodeURIComponent(f.name)}`); x.setRequestHeader('Content-Type', 'application/octet-stream');
+  x.upload.onprogress = (e) => { const p = Math.round((e.loaded / e.total) * 100); bar.style.width = p + '%'; st.textContent = `${fmtSize(f.size)} · caricamento ${p}%`; };
+  x.onload = () => { const ok = x.status === 200; let m = 'errore'; try { m = JSON.parse(x.responseText).error || m; } catch {}
+    row.classList.add(ok ? 'done' : 'err'); bar.style.width = '100%'; st.textContent = ok ? 'Caricato: ora in conversione' : m; done(ok); };
+  x.onerror = () => { row.classList.add('err'); st.textContent = 'Errore di rete'; done(false); };
+  x.send(f);
+});
+
+function paneUpload(pane) {
+  const sel = []; let busy = false;
+  pane.innerHTML = `<label class="drop" id="drop" tabindex="0">${ic('plus')}<b>Trascina qui i video</b><span>oppure tocca per sceglierli · avi, mkv, mp4, mov e altri formati</span><input id="uf" type="file" multiple hidden></label>
+    <div class="opt"><label for="ul">Lingua dell'audio da tenere</label><select id="ul">${LANGS}</select><small>Se un file ha più tracce audio, resta solo questa.</small></div>
+    <div id="fl"></div><button class="btn w" id="ub" hidden></button>`;
+  const drop = $('#drop'), inp = $('#uf'), list = $('#fl'), go = $('#ub');
+  const sync = () => { go.hidden = !sel.length; go.textContent = `Avvia il caricamento (${sel.length} ${sel.length === 1 ? 'file' : 'file'})`; };
+  function add(files) {
+    for (const f of files) {
+      if (!VID_RE.test(f.name)) { toast('Formato non supportato: ' + f.name, 'er'); continue; }
+      const row = document.createElement('div'); row.className = 'fi';
+      row.innerHTML = `<div class="n"><b>${esc(f.name)}</b><button class="rm" aria-label="Rimuovi">${ic('x')}</button></div><div class="s">${fmtSize(f.size)} · in attesa</div><div class="pbar"><i></i></div>`;
+      const item = { f, row };
+      row.querySelector('.rm').onclick = () => { if (busy) return; sel.splice(sel.indexOf(item), 1); row.remove(); sync(); };
+      sel.push(item); list.append(row);
+    }
+    sync();
+  }
+  inp.onchange = () => { add(inp.files); inp.value = ''; };
+  drop.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inp.click(); } };
+  ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', (e) => add(e.dataTransfer.files));
+  go.onclick = async () => {
+    if (busy) return; busy = true; go.disabled = true;
+    const queue = sel.splice(0), lang = $('#ul').value; let n = 0;
+    for (const it of queue) { it.row.querySelector('.rm').hidden = true; if (await up(it.f, it.row, lang)) { n++; watchJobs(); } }
+    busy = false; go.disabled = false; sync();
+    if (n) toast(n === 1 ? 'File caricato: lo stiamo convertendo' : `${n} file caricati: li stiamo convertendo`, 'ok');
+  };
+}
+
+function paneCatalog(pane) {
+  pane.innerHTML = `<p class="hint">Film di pubblico dominio o con licenza libera dell'Internet Archive. Scegli un genere o cerca per titolo, poi premi “Scarica”. Controlla sempre la licenza nella scheda originale.</p>
+    <div class="chips" id="gc" style="margin:0 0 .8rem"></div>
+    <div class="opt" style="margin-top:0"><label for="cl">Lingua dell'audio da tenere</label><select id="cl">${LANGS}</select></div>
+    <input id="cs" class="inp" type="search" placeholder="Cerca per titolo (facoltativo)" value="${esc(addState.q)}"><div id="cr"></div>`;
+  const go = () => catSearch($('#cr'), addState.q, addState.genre, () => $('#cl').value);
+  j('/api/catalog/genres').then((gs) => {
+    const draw = () => $('#gc').replaceChildren(chip('Tutti', !addState.genre, () => { addState.genre = ''; draw(); go(); }),
+      ...gs.map((g) => chip(g.label, addState.genre === g.key, () => { addState.genre = g.key; draw(); go(); })));
+    draw();
+  });
+  let t5; $('#cs').oninput = (e) => { addState.q = e.target.value.trim(); clearTimeout(t5); t5 = setTimeout(go, 400); };
+  go();
+}
+
+function renderAdd(main) {
+  main.innerHTML = `<div class="pg"><h2 class="ph disp">Aggiungi alla libreria</h2>
+    <p class="hint">Porta nuovi film e serie in HomeFlix: scegli da dove, al resto pensiamo noi.</p>
+    <div class="steps"><div><i>1</i>Scegli i video</div><div><i>2</i>Li convertiamo</div><div><i>3</i>Li trovi in libreria</div></div>
+    <div class="seg" id="seg"></div><div id="pane"></div>
+    <h3 class="sub">Attività <span class="live" id="live"></span></h3><div id="jobs"></div></div>`;
+  const show = (tab) => {
+    addState.tab = tab;
+    $('#seg').replaceChildren(...[['up', 'Da questo dispositivo'], ['ia', 'Catalogo libero']].map(([k, l]) => {
+      const b = document.createElement('button'); b.textContent = l; b.className = tab === k ? 'on' : ''; b.onclick = () => show(k); return b; }));
+    const pane = $('#pane'); (tab === 'up' ? paneUpload : paneCatalog)(pane);
+    pane.classList.remove('view'); void pane.offsetWidth; pane.classList.add('view');
+  };
+  show(addState.tab); onJobs = drawJobs; drawJobs(jobList);
+}
+
+/* --- esplora per genere (libreria e catalogo libero) --- */
+const exp = { src: 'lib', type: 'all', genre: '', q: '' };
+const gnames = (t) => (t.genres ? t.genres.split(',') : []);
+const chip = (label, on, fn) => { const b = document.createElement('button'); b.className = 'chip' + (on ? ' on' : ''); b.textContent = label; b.onclick = fn; return b; };
+
+async function catSearch(box, q2, genre, getLang) {
+  box.textContent = 'Ricerca…';
+  const r = await j(`/api/catalog/search?q=${encodeURIComponent(q2)}&genre=${encodeURIComponent(genre || '')}`);
+  if (r.error) { box.textContent = r.error; return; }
+  box.replaceChildren(...(r.length ? r.map((x) => liRow(x.thumb, x.title, `${x.year || ''} · <a href="https://archive.org/details/${encodeURIComponent(x.id)}" target="_blank" rel="noopener" style="color:inherit">scheda e licenza</a>`,
+    btn('Scarica', async (e) => { const b = e.target; b.disabled = true; b.textContent = 'Attendi…'; const d = await jpost('/api/catalog/download', { id: x.id, lang: getLang() });
+      if (d.error) { b.disabled = false; b.textContent = 'Riprova'; toast(d.error, 'er'); } else { b.textContent = 'In coda'; toast('Aggiunto alla coda: ' + x.title, 'ok'); watchJobs(); } }, 'w')))
+    : [document.createTextNode('Nessun risultato.')]));
+}
+
+async function renderExplore(main) {
+  const draw = async () => {
+    main.innerHTML = '<div class="pg wide"><h2 class="ph disp">Esplora per genere</h2><div class="chips" id="c1"></div><div class="chips" id="c2"></div><div class="chips" id="c3"></div><div id="ex"></div></div>';
+    const src = (k, l) => chip(l, exp.src === k, () => { exp.src = k; exp.genre = ''; draw(); });
+    $('#c1').append(src('lib', 'La mia libreria'), src('ia', 'Catalogo libero'));
+    const ex = $('#ex');
+    if (exp.src === 'lib') {
+      const base = titles.filter((t) => exp.type === 'all' || t.kind === exp.type);
+      const genres = [...new Set(base.flatMap(gnames))].sort((a, b) => a.localeCompare(b, 'it'));
+      const pool = exp.genre ? base.filter((t) => gnames(t).includes(exp.genre)) : base;
+      $('#c2').append(...[['all', 'Tutto'], ['movie', 'Film'], ['series', 'Serie TV']].map(([k, l]) => chip(l, exp.type === k, () => { exp.type = k; exp.genre = ''; draw(); })));
+      $('#c3').append(chip('Tutti i generi', !exp.genre, () => { exp.genre = ''; draw(); }), ...genres.map((g) => chip(g, exp.genre === g, () => { exp.genre = g; draw(); })));
+      if (pool.length) $('#c2').append(chip('Scegli per me', false, () => openTitle(pool[(Math.random() * pool.length) | 0].id)));
+      if (!base.length) ex.innerHTML = '<div class="empty">Nessun titolo in libreria.</div>';
+      else if (exp.genre || !genres.length) {
+        ex.append(grid(pool));
+        if (!genres.length) ex.insertAdjacentHTML('afterbegin', '<p class="hint" style="margin:0 4% 1rem">Per dividere per genere serve la chiave TMDB: impostala nel file .env e premi “Aggiorna”.</p>');
+      } else ex.append(...genres.map((g) => row(g, base.filter((t) => gnames(t).includes(g)).map((t) => card(t)))));
+    } else {
+      const gs = await j('/api/catalog/genres');
+      $('#c3').append(chip('Tutti', !exp.genre, () => { exp.genre = ''; draw(); }), ...gs.map((g) => chip(g.label, exp.genre === g.key, () => { exp.genre = g.key; draw(); })));
+      ex.innerHTML = `<div class="pg"><p class="hint">Film di pubblico dominio o con licenza libera dell'Internet Archive. Controlla sempre la licenza nella scheda originale.</p>
+        <select id="xl" class="inp">${LANGS}</select><input id="xs" class="inp" type="search" placeholder="Cerca per titolo (facoltativo)" value="${esc(exp.q)}"><div id="xr"></div></div>`;
+      const go = () => catSearch($('#xr'), exp.q, exp.genre, () => $('#xl').value);
+      let t4; $('#xs').oninput = (e) => { exp.q = e.target.value.trim(); clearTimeout(t4); t4 = setTimeout(go, 400); };
+      go();
+    }
+  };
+  draw();
+}
 setPP(); load();
 </script>
 </body>

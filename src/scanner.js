@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { db, MEDIA_DIR } from './db.js';
+import { genreNames } from './tmdb.js';
 
 const EXT = new Set(['.mp4', '.m4v', '.webm', '.mkv']);
 const TMDB_KEY = process.env.TMDB_API_KEY;
@@ -38,10 +39,14 @@ async function tmdb(t) {
     const r = await fetch(`https://api.themoviedb.org/3/search/${type}?${q}`);
     const hit = (await r.json()).results?.[0];
     if (!hit) return;
-    db.prepare('UPDATE titles SET poster=?, backdrop=?, overview=? WHERE id=?').run(
+    let genres = null;
+    try { genres = (await genreNames(hit.genre_ids || [])).join(','); } catch { /* riproverà al prossimo scan */ }
+    db.prepare('UPDATE titles SET poster=?, backdrop=?, overview=?, tmdb_id=?, genres=? WHERE id=?').run(
       hit.poster_path ? `https://image.tmdb.org/t/p/w342${hit.poster_path}` : null,
       hit.backdrop_path ? `https://image.tmdb.org/t/p/w1280${hit.backdrop_path}` : null,
       hit.overview || null,
+      hit.id,
+      genres,
       t.id
     );
   } catch { /* offline: riproverà al prossimo scan */ }
@@ -80,7 +85,7 @@ export async function scan() {
   }
 
   if (TMDB_KEY) {
-    for (const t of db.prepare('SELECT * FROM titles WHERE backdrop IS NULL').all()) await tmdb(t);
+    for (const t of db.prepare('SELECT * FROM titles WHERE tmdb_id IS NULL OR genres IS NULL').all()) await tmdb(t);
   }
   return {
     titles: db.prepare('SELECT COUNT(*) n FROM titles').get().n,

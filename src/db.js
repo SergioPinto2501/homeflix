@@ -33,3 +33,17 @@ CREATE TABLE IF NOT EXISTS progress (
 );
 `);
 try { db.exec('ALTER TABLE titles ADD COLUMN backdrop TEXT'); } catch { /* colonna già presente */ }
+try { db.exec('ALTER TABLE titles ADD COLUMN tmdb_id INTEGER'); } catch { /* già presente */ }
+try { db.exec('ALTER TABLE titles ADD COLUMN genres TEXT'); } catch { /* già presente */ }
+db.exec(`
+CREATE TABLE IF NOT EXISTS wishlist (
+  id INTEGER PRIMARY KEY,
+  tmdb_id INTEGER NOT NULL,
+  kind TEXT NOT NULL,
+  name TEXT NOT NULL,
+  year INTEGER NOT NULL DEFAULT 0,
+  poster TEXT,
+  overview TEXT,
+  added_at INTEGER NOT NULL,
+  UNIQUE (tmdb_id, kind)
+);`);

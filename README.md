@@ -10,9 +10,12 @@ Apri il browser da PC, telefono o smart TV, scegli un titolo e lo guardi in stre
 - **Interfaccia in stile streaming**: banner in evidenza, file di titoli a scorrimento orizzontale, schede dettaglio con stagioni ed episodi, ricerca e filtri Film / Serie TV.
 - **Locandine, sfondi e trame** scaricati da [TMDB](https://www.themoviedb.org/) (opzionale, con chiave gratuita).
 - **Riproduzione nel browser** con salto in avanti e indietro (il server usa le HTTP range requests, quindi non scarica tutto il file).
-- **"Continua a guardare"**: ricorda il punto in cui eri rimasto e riprende da lì.
+- **"Continua a guardare"**: ricorda il punto in cui eri rimasto e riprende da lì. Mostra una sola scheda per ogni titolo: per le serie l'ultimo episodio guardato, oppure il successivo se l'avevi finito.
 - **Episodio successivo automatico** a fine puntata.
 - **Convertitore incluso**: trasforma qualsiasi video (avi, mkv, mov, ts...) in MP4 compatibili con il browser, in alta qualità e senza upscaling, scegliendo da solo la traccia audio italiana.
+- **Esplora per genere**: sfogli la libreria divisa per genere (Azione, Commedia, Fantascienza...) e filtri tra film e serie TV, con il pulsante "Scegli per me" che propone un titolo a caso.
+- **Lista desideri**: cerca film e serie su TMDB, salvali in una lista e vedi su quali piattaforme di streaming sono disponibili nel tuo paese (dati JustWatch).
+- **Aggiungere video dal browser**: carichi uno o più file, anche da telefono, e il server li converte e li aggiunge alla libreria da solo.
 - **Leggero**: backend Node.js + SQLite integrato, nessun database da installare né librerie native da compilare.
 
 ## Requisiti
@@ -44,6 +47,8 @@ Tutte le impostazioni stanno nel file `.env` (copia di `.env.example`), che vien
 | `TMDB_API_KEY` | vuota | Chiave **v3** di TMDB per locandine, sfondi e trame. Senza chiave l'app funziona con riquadri colorati. |
 | `PORT` | `3000` | Porta del server. |
 | `DATA_DIR` | `./data` | Dove salvare il database SQLite. |
+| `TMDB_REGION` | `IT` | Paese per la disponibilità in streaming (codice a due lettere). |
+| `UPLOAD_DIR` | `./data/uploads` | Cartella temporanea per i caricamenti (viene svuotata a conversione finita). |
 
 ### Ottenere la chiave TMDB (gratis)
 
@@ -91,6 +96,22 @@ Con `--dry-run` per ogni file stampa cosa farà (copia o ricodifica, e perché) 
 
 Opzioni: `--out <cartella>`, `--lang ita|eng|fre|ger|spa|jpn`, `--crf 18` (qualità: più basso = migliore e più pesante, 16-20 consigliato), `--preset medium` (`slow` dà file un po' più piccoli a parità di qualità ma è più lento) e `--max-height 1080` (riduce solo i video più alti di così, ad esempio i 4K, per risparmiare spazio; non ingrandisce mai quelli più bassi). Conviene convertire sul PC e non sul Raspberry, che è molto più lento.
 
+## Esplorare per genere
+
+La scheda **Esplora** (barra in basso su telefono) divide la libreria per genere:
+
+- filtri Tutto / Film / Serie TV e un elenco di generi. Senza scegliere un genere vedi una fila per ogni genere; scegliendone uno, la griglia dei titoli di quel genere. **Scegli per me** apre un titolo a caso tra quelli visibili. I generi arrivano da TMDB al momento della scansione, quindi servono la chiave TMDB e un "Aggiorna" dopo l'impostazione. Anche i titoli già in libreria li riceveranno alla prima scansione.
+
+## Aggiungere titoli dall'app
+
+Dalle schede **La mia lista** e **Aggiungi** (barra in basso su telefono):
+
+- **La mia lista**: cerchi un titolo (serve la chiave TMDB), lo aggiungi alla lista e vedi se è in streaming, a noleggio o in vendita nel tuo paese. Se poi il titolo entra in libreria, compare l'etichetta "In libreria". La stessa informazione è nella scheda di ogni titolo.
+- **Carica dal tuo dispositivo**: trascina i video nell'area tratteggiata (o toccala per sceglierli), controlli l'elenco con le barre di avanzamento, scegli la lingua dell'audio e avvii. Il caricamento avviene dal browser, poi il server converte con lo stesso script di `npm run convert` e aggiorna la libreria.
+- **Attività**: nella scheda Aggiungi vedi in diretta ogni lavoro con la sua barra. Da qualsiasi schermata, un indicatore in basso segnala che c'è qualcosa in corso e una notifica ti avvisa quando un titolo è pronto. Mostra lo stato di caricamenti e conversioni. Il server lavora un file alla volta, per non sovraccaricare il Raspberry.
+
+Per i titoli che non hai, la lista desideri ti dice dove guardarli legalmente.
+
 ## Uso dell'interfaccia
 
 - **Home**: banner in evidenza e file di titoli. Cliccando una locandina si apre la scheda con il pulsante Riproduci / Riprendi.
@@ -123,6 +144,8 @@ homeflix/
 ├── src/
 │   ├── server.js      server web, API e streaming dei video
 │   ├── scanner.js     scansione cartelle e riconoscimento dei nomi, metadati TMDB
+│   ├── tmdb.js        ricerca titoli e piattaforme di streaming
+│   ├── jobs.js        coda di caricamenti e conversioni
 │   ├── db.js          database SQLite (titoli, file, progressi)
 │   └── scan-cli.js    scansione da riga di comando (npm run scan)
 ├── public/
@@ -134,11 +157,13 @@ homeflix/
 └── homeflix.service   servizio systemd per il Raspberry
 ```
 
-Le API principali, se vuoi collegarci altro: `GET /api/titles`, `GET /api/titles/:id`, `GET /api/continue`, `PUT /api/progress/:fileId`, `POST /api/scan` e `GET /stream/:fileId`.
+Le API principali, se vuoi collegarci altro: `GET /api/titles`, `GET /api/titles/:id`, `GET /api/continue`, `PUT /api/progress/:fileId`, `POST /api/scan` e `GET /stream/:fileId`. Per le funzioni di aggiunta: `GET /api/discover`, `GET /api/providers`, `GET|POST|DELETE /api/wishlist`, `POST /api/upload` e `GET /api/jobs`.
 
 ## Sicurezza
 
 **HomeFlix non ha un login**: chiunque raggiunga la porta del server può guardare e usare l'app. Usalo solo nella rete di casa e non aprire la porta sul router. Per guardarlo anche fuori casa installa [Tailscale](https://tailscale.com/) sul Raspberry e sui tuoi dispositivi: crea una rete privata senza esporre nulla a internet.
+
+Per lo stesso motivo, **chiunque sulla rete può anche caricare file e avviare conversioni** dalla scheda Aggiungi: un motivo in più per non esporre la porta a internet.
 
 Non pubblicare mai il file `.env` (contiene la chiave TMDB): è già escluso da Git insieme a `media/`, `data/` e `node_modules/`.
 

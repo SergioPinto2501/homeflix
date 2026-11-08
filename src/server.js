@@ -6,8 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { db, MEDIA_DIR } from './db.js';
 import { scan } from './scanner.js';
 import { searchMulti, providers } from './tmdb.js';
-import { iaSearch, iaPick, GENRES } from './catalog.js';
-import { addJob, jobs, download, convertFile, tempDir, safeName, VIDEO_EXT } from './jobs.js';
+import { addJob, jobs, convertFile, tempDir, safeName, VIDEO_EXT } from './jobs.js';
 import { pipeline } from 'node:stream/promises';
 
 const PORT = +process.env.PORT || 3000;
@@ -85,7 +84,7 @@ app.post('/api/wishlist', (req, reply) => {
 });
 app.delete('/api/wishlist/:id', (req) => { db.prepare('DELETE FROM wishlist WHERE id=?').run(req.params.id); return { ok: true }; });
 
-// --- aggiungere video: caricamento dal browser e catalogo libero (Internet Archive) ---
+// --- aggiungere video: caricamento dal browser, conversione e coda dei lavori ---
 app.addContentTypeParser('application/octet-stream', (req, payload, done) => done(null, payload));
 app.post('/api/upload', async (req, reply) => {
   const name = safeName(req.query.name || '');
@@ -95,20 +94,6 @@ app.post('/api/upload', async (req, reply) => {
   return { job: addJob(name, (j) => convertFile(j, file, lang)) };
 });
 app.get('/api/jobs', () => jobs);
-app.get('/api/catalog/search', async (req, reply) => { try { return await iaSearch(req.query.q || '', req.query.genre || ''); } catch (e) { return fail(reply, e); } });
-app.get('/api/catalog/genres', () => GENRES.map(({ key, label }) => ({ key, label })));
-app.post('/api/catalog/download', async (req, reply) => {
-  const { id, lang } = req.body || {};
-  if (!/^[\w.-]+$/.test(id || '')) return reply.code(400).send({ error: 'Identificativo non valido' });
-  try {
-    const info = await iaPick(id);
-    if (!info.file) return reply.code(404).send({ error: 'Nessun file video disponibile per questo titolo' });
-    const file = path.join(tempDir(), safeName(info.year ? `${info.title} (${info.year})` : info.title) + path.extname(info.file.name));
-    const url = `https://archive.org/download/${encodeURIComponent(id)}/${info.file.name.split('/').map(encodeURIComponent).join('/')}`;
-    const job = addJob(info.title, async (j) => { await download(j, url, file); await convertFile(j, file, String(lang || 'ita')); });
-    return { job, license: info.license };
-  } catch (e) { return fail(reply, e); }
-});
 
 // Streaming con HTTP range: permette seek e riproduzione senza scaricare tutto il file
 app.get('/stream/:id', (req, reply) => {

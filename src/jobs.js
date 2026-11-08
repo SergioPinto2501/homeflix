@@ -1,9 +1,7 @@
-// Coda dei lavori (caricamenti, download, conversioni): uno alla volta, per non sovraccaricare il Raspberry
+// Coda dei lavori (caricamenti e conversioni): uno alla volta, per non sovraccaricare il Raspberry
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { Readable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
 import { fileURLToPath } from 'node:url';
 import { DATA_DIR, MEDIA_DIR } from './db.js';
 import { scan } from './scanner.js';
@@ -33,17 +31,6 @@ async function pump() {
     try { await run(job); job.status = 'completato'; } catch (e) { job.status = 'errore'; job.detail = e.message; }
   }
   busy = false;
-}
-
-export async function download(job, url, dest) {
-  job.status = 'download';
-  const r = await fetch(url, { headers: { 'User-Agent': 'HomeFlix/0.1' } });
-  if (!r.ok) throw new Error('download non riuscito (' + r.status + ')');
-  const total = +r.headers.get('content-length') || 0;
-  let got = 0;
-  const rs = Readable.fromWeb(r.body);
-  rs.on('data', (c) => { got += c.length; job.detail = total ? `${Math.round((got / total) * 100)}% di ${(total / 1e6) | 0} MB` : `${(got / 1e6) | 0} MB`; });
-  await pipeline(rs, fs.createWriteStream(dest));
 }
 
 // Usa lo stesso script di conversione da riga di comando, poi aggiorna la libreria

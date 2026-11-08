@@ -476,7 +476,7 @@ $('#scan').onclick = async () => {
   load();
 };
 
-/* --- lista desideri, aggiungere video, catalogo libero --- */
+/* --- lista desideri e aggiungere video --- */
 let jobT;
 const jpost = (u, b) => j(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
 const LANGS = '<option value="ita">Audio: italiano</option><option value="eng">Audio: inglese</option><option value="fre">Audio: francese</option><option value="ger">Audio: tedesco</option><option value="spa">Audio: spagnolo</option><option value="jpn">Audio: giapponese</option>';
@@ -516,7 +516,6 @@ function renderList(main) {
   draw();
 }
 
-const addState = { tab: 'up', genre: '', q: '' };
 const VID_RE = /\.(avi|mkv|mp4|m4v|mov|wmv|asf|flv|mpg|mpeg|ts|m2ts|mts|vob|webm|divx|3gp|ogm|ogv|rmvb)$/i;
 const fmtSize = (b) => (b > 1e9 ? (b / 1e9).toFixed(1) + ' GB' : Math.max(1, Math.round(b / 1e6)) + ' MB');
 let jobList = []; const seen = {};
@@ -607,79 +606,35 @@ function paneUpload(pane) {
   };
 }
 
-function paneCatalog(pane) {
-  pane.innerHTML = `<p class="hint">Film di pubblico dominio o con licenza libera dell'Internet Archive. Scegli un genere o cerca per titolo, poi premi “Scarica”. Controlla sempre la licenza nella scheda originale.</p>
-    <div class="chips" id="gc" style="margin:0 0 .8rem"></div>
-    <div class="opt" style="margin-top:0"><label for="cl">Lingua dell'audio da tenere</label><select id="cl">${LANGS}</select></div>
-    <input id="cs" class="inp" type="search" placeholder="Cerca per titolo (facoltativo)" value="${esc(addState.q)}"><div id="cr"></div>`;
-  const go = () => catSearch($('#cr'), addState.q, addState.genre, () => $('#cl').value);
-  j('/api/catalog/genres').then((gs) => {
-    const draw = () => $('#gc').replaceChildren(chip('Tutti', !addState.genre, () => { addState.genre = ''; draw(); go(); }),
-      ...gs.map((g) => chip(g.label, addState.genre === g.key, () => { addState.genre = g.key; draw(); go(); })));
-    draw();
-  });
-  let t5; $('#cs').oninput = (e) => { addState.q = e.target.value.trim(); clearTimeout(t5); t5 = setTimeout(go, 400); };
-  go();
-}
-
 function renderAdd(main) {
   main.innerHTML = `<div class="pg"><h2 class="ph disp">Aggiungi alla libreria</h2>
-    <p class="hint">Porta nuovi film e serie in HomeFlix: scegli da dove, al resto pensiamo noi.</p>
+    <p class="hint">Porta nuovi film e serie in HomeFlix dal tuo dispositivo: al resto pensiamo noi.</p>
     <div class="steps"><div><i>1</i>Scegli i video</div><div><i>2</i>Li convertiamo</div><div><i>3</i>Li trovi in libreria</div></div>
-    <div class="seg" id="seg"></div><div id="pane"></div>
+    <div id="pane"></div>
     <h3 class="sub">Attività <span class="live" id="live"></span></h3><div id="jobs"></div></div>`;
-  const show = (tab) => {
-    addState.tab = tab;
-    $('#seg').replaceChildren(...[['up', 'Da questo dispositivo'], ['ia', 'Catalogo libero']].map(([k, l]) => {
-      const b = document.createElement('button'); b.textContent = l; b.className = tab === k ? 'on' : ''; b.onclick = () => show(k); return b; }));
-    const pane = $('#pane'); (tab === 'up' ? paneUpload : paneCatalog)(pane);
-    pane.classList.remove('view'); void pane.offsetWidth; pane.classList.add('view');
-  };
-  show(addState.tab); onJobs = drawJobs; drawJobs(jobList);
+  paneUpload($('#pane')); onJobs = drawJobs; drawJobs(jobList);
 }
 
-/* --- esplora per genere (libreria e catalogo libero) --- */
-const exp = { src: 'lib', type: 'all', genre: '', q: '' };
+/* --- esplora per genere --- */
+const exp = { type: 'all', genre: '' };
 const gnames = (t) => (t.genres ? t.genres.split(',') : []);
 const chip = (label, on, fn) => { const b = document.createElement('button'); b.className = 'chip' + (on ? ' on' : ''); b.textContent = label; b.onclick = fn; return b; };
 
-async function catSearch(box, q2, genre, getLang) {
-  box.textContent = 'Ricerca…';
-  const r = await j(`/api/catalog/search?q=${encodeURIComponent(q2)}&genre=${encodeURIComponent(genre || '')}`);
-  if (r.error) { box.textContent = r.error; return; }
-  box.replaceChildren(...(r.length ? r.map((x) => liRow(x.thumb, x.title, `${x.year || ''} · <a href="https://archive.org/details/${encodeURIComponent(x.id)}" target="_blank" rel="noopener" style="color:inherit">scheda e licenza</a>`,
-    btn('Scarica', async (e) => { const b = e.target; b.disabled = true; b.textContent = 'Attendi…'; const d = await jpost('/api/catalog/download', { id: x.id, lang: getLang() });
-      if (d.error) { b.disabled = false; b.textContent = 'Riprova'; toast(d.error, 'er'); } else { b.textContent = 'In coda'; toast('Aggiunto alla coda: ' + x.title, 'ok'); watchJobs(); } }, 'w')))
-    : [document.createTextNode('Nessun risultato.')]));
-}
-
-async function renderExplore(main) {
-  const draw = async () => {
-    main.innerHTML = '<div class="pg wide"><h2 class="ph disp">Esplora per genere</h2><div class="chips" id="c1"></div><div class="chips" id="c2"></div><div class="chips" id="c3"></div><div id="ex"></div></div>';
-    const src = (k, l) => chip(l, exp.src === k, () => { exp.src = k; exp.genre = ''; draw(); });
-    $('#c1').append(src('lib', 'La mia libreria'), src('ia', 'Catalogo libero'));
-    const ex = $('#ex');
-    if (exp.src === 'lib') {
-      const base = titles.filter((t) => exp.type === 'all' || t.kind === exp.type);
-      const genres = [...new Set(base.flatMap(gnames))].sort((a, b) => a.localeCompare(b, 'it'));
-      const pool = exp.genre ? base.filter((t) => gnames(t).includes(exp.genre)) : base;
-      $('#c2').append(...[['all', 'Tutto'], ['movie', 'Film'], ['series', 'Serie TV']].map(([k, l]) => chip(l, exp.type === k, () => { exp.type = k; exp.genre = ''; draw(); })));
-      $('#c3').append(chip('Tutti i generi', !exp.genre, () => { exp.genre = ''; draw(); }), ...genres.map((g) => chip(g, exp.genre === g, () => { exp.genre = g; draw(); })));
-      if (pool.length) $('#c2').append(chip('Scegli per me', false, () => openTitle(pool[(Math.random() * pool.length) | 0].id)));
-      if (!base.length) ex.innerHTML = '<div class="empty">Nessun titolo in libreria.</div>';
-      else if (exp.genre || !genres.length) {
-        ex.append(grid(pool));
-        if (!genres.length) ex.insertAdjacentHTML('afterbegin', '<p class="hint" style="margin:0 4% 1rem">Per dividere per genere serve la chiave TMDB: impostala nel file .env e premi “Aggiorna”.</p>');
-      } else ex.append(...genres.map((g) => row(g, base.filter((t) => gnames(t).includes(g)).map((t) => card(t)))));
-    } else {
-      const gs = await j('/api/catalog/genres');
-      $('#c3').append(chip('Tutti', !exp.genre, () => { exp.genre = ''; draw(); }), ...gs.map((g) => chip(g.label, exp.genre === g.key, () => { exp.genre = g.key; draw(); })));
-      ex.innerHTML = `<div class="pg"><p class="hint">Film di pubblico dominio o con licenza libera dell'Internet Archive. Controlla sempre la licenza nella scheda originale.</p>
-        <select id="xl" class="inp">${LANGS}</select><input id="xs" class="inp" type="search" placeholder="Cerca per titolo (facoltativo)" value="${esc(exp.q)}"><div id="xr"></div></div>`;
-      const go = () => catSearch($('#xr'), exp.q, exp.genre, () => $('#xl').value);
-      let t4; $('#xs').oninput = (e) => { exp.q = e.target.value.trim(); clearTimeout(t4); t4 = setTimeout(go, 400); };
-      go();
-    }
+function renderExplore(main) {
+  main.innerHTML = '<div class="pg wide"><h2 class="ph disp">Esplora per genere</h2><div class="chips" id="c2"></div><div class="chips" id="c3"></div><div id="ex"></div></div>';
+  const draw = () => {
+    const ex = $('#ex'); ex.replaceChildren(); $('#c2').replaceChildren(); $('#c3').replaceChildren();
+    const base = titles.filter((t) => exp.type === 'all' || t.kind === exp.type);
+    const genres = [...new Set(base.flatMap(gnames))].sort((a, b) => a.localeCompare(b, 'it'));
+    const pool = exp.genre ? base.filter((t) => gnames(t).includes(exp.genre)) : base;
+    $('#c2').append(...[['all', 'Tutto'], ['movie', 'Film'], ['series', 'Serie TV']].map(([k, l]) => chip(l, exp.type === k, () => { exp.type = k; exp.genre = ''; draw(); })));
+    $('#c3').append(chip('Tutti i generi', !exp.genre, () => { exp.genre = ''; draw(); }), ...genres.map((g) => chip(g, exp.genre === g, () => { exp.genre = g; draw(); })));
+    if (pool.length) $('#c2').append(chip('Scegli per me', false, () => openTitle(pool[(Math.random() * pool.length) | 0].id)));
+    if (!base.length) ex.innerHTML = '<div class="empty">Nessun titolo in libreria.</div>';
+    else if (exp.genre || !genres.length) {
+      ex.append(grid(pool));
+      if (!genres.length) ex.insertAdjacentHTML('afterbegin', '<p class="hint" style="margin:0 4% 1rem">Per dividere per genere serve la chiave TMDB: impostala nel file .env e premi “Aggiorna”.</p>');
+    } else ex.append(...genres.map((g) => row(g, base.filter((t) => gnames(t).includes(g)).map((t) => card(t)))));
   };
   draw();
 }

@@ -13,10 +13,9 @@ Apri il browser da PC, telefono o smart TV, scegli un titolo e lo guardi in stre
 - **"Continua a guardare"**: ricorda il punto in cui eri rimasto e riprende da lì. Mostra una sola scheda per ogni titolo: per le serie l'ultimo episodio guardato, oppure il successivo se l'avevi finito.
 - **Episodio successivo automatico** a fine puntata.
 - **Convertitore incluso**: trasforma qualsiasi video (avi, mkv, mov, ts...) in MP4 compatibili con il browser, in alta qualità e senza upscaling, scegliendo da solo la traccia audio italiana.
-- **Esplora per genere**: sfogli la libreria divisa per genere (Azione, Commedia, Fantascienza...) e filtri tra film e serie TV, con il pulsante "Scegli per me" che propone un titolo a caso. Lo stesso vale per il catalogo libero dell'Internet Archive.
+- **Esplora per genere**: sfogli la libreria divisa per genere (Azione, Commedia, Fantascienza...) e filtri tra film e serie TV, con il pulsante "Scegli per me" che propone un titolo a caso.
 - **Lista desideri**: cerca film e serie su TMDB, salvali in una lista e vedi su quali piattaforme di streaming sono disponibili nel tuo paese (dati JustWatch).
 - **Aggiungere video dal browser**: carichi uno o più file, anche da telefono, e il server li converte e li aggiunge alla libreria da solo.
-- **Catalogo libero**: cerca e scarica film di pubblico dominio o con licenza libera dall'[Internet Archive](https://archive.org), convertiti e aggiunti in automatico.
 - **Leggero**: backend Node.js + SQLite integrato, nessun database da installare né librerie native da compilare.
 
 ## Requisiti
@@ -49,7 +48,7 @@ Tutte le impostazioni stanno nel file `.env` (copia di `.env.example`), che vien
 | `PORT` | `3000` | Porta del server. |
 | `DATA_DIR` | `./data` | Dove salvare il database SQLite. |
 | `TMDB_REGION` | `IT` | Paese per la disponibilità in streaming (codice a due lettere). |
-| `UPLOAD_DIR` | `./data/uploads` | Cartella temporanea per caricamenti e download (viene svuotata a conversione finita). |
+| `UPLOAD_DIR` | `./data/uploads` | Cartella temporanea per i caricamenti (viene svuotata a conversione finita). |
 
 ### Ottenere la chiave TMDB (gratis)
 
@@ -99,10 +98,9 @@ Opzioni: `--out <cartella>`, `--lang ita|eng|fre|ger|spa|jpn`, `--crf 18` (quali
 
 ## Esplorare per genere
 
-La scheda **Esplora** (barra in basso su telefono) ha due modi:
+La scheda **Esplora** (barra in basso su telefono) divide la libreria per genere:
 
-- **La mia libreria**: filtri Tutto / Film / Serie TV e un elenco di generi. Senza scegliere un genere vedi una fila per ogni genere; scegliendone uno, la griglia dei titoli di quel genere. **Scegli per me** apre un titolo a caso tra quelli visibili. I generi arrivano da TMDB al momento della scansione, quindi servono la chiave TMDB e un "Aggiorna" dopo l'impostazione. Anche i titoli già in libreria li riceveranno alla prima scansione.
-- **Catalogo libero**: scegli un genere (Commedia, Horror, Western, Noir, Fantascienza...) e, se vuoi, aggiungi una parola del titolo. I risultati si possono scaricare con un tocco. I generi del catalogo si basano sulle etichette degli utenti dell'Internet Archive, quindi non sono precisi come quelli di TMDB.
+- filtri Tutto / Film / Serie TV e un elenco di generi. Senza scegliere un genere vedi una fila per ogni genere; scegliendone uno, la griglia dei titoli di quel genere. **Scegli per me** apre un titolo a caso tra quelli visibili. I generi arrivano da TMDB al momento della scansione, quindi servono la chiave TMDB e un "Aggiorna" dopo l'impostazione. Anche i titoli già in libreria li riceveranno alla prima scansione.
 
 ## Aggiungere titoli dall'app
 
@@ -110,10 +108,9 @@ Dalle schede **La mia lista** e **Aggiungi** (barra in basso su telefono):
 
 - **La mia lista**: cerchi un titolo (serve la chiave TMDB), lo aggiungi alla lista e vedi se è in streaming, a noleggio o in vendita nel tuo paese. Se poi il titolo entra in libreria, compare l'etichetta "In libreria". La stessa informazione è nella scheda di ogni titolo.
 - **Carica dal tuo dispositivo**: trascina i video nell'area tratteggiata (o toccala per sceglierli), controlli l'elenco con le barre di avanzamento, scegli la lingua dell'audio e avvii. Il caricamento avviene dal browser, poi il server converte con lo stesso script di `npm run convert` e aggiorna la libreria.
-- **Catalogo libero**: cerca nell'Internet Archive (collezioni di film di pubblico dominio e film open source) e premi "Scarica". Il file migliore disponibile viene scaricato, convertito e aggiunto. **Controlla sempre la licenza** nella scheda originale: nell'archivio la provenienza dei file varia.
-- **Attività**: nella scheda Aggiungi vedi in diretta ogni lavoro con la sua barra. Da qualsiasi schermata, un indicatore in basso segnala che c'è qualcosa in corso e una notifica ti avvisa quando un titolo è pronto. Mostra lo stato di caricamenti, download e conversioni. Il server lavora un file alla volta, per non sovraccaricare il Raspberry.
+- **Attività**: nella scheda Aggiungi vedi in diretta ogni lavoro con la sua barra. Da qualsiasi schermata, un indicatore in basso segnala che c'è qualcosa in corso e una notifica ti avvisa quando un titolo è pronto. Mostra lo stato di caricamenti e conversioni. Il server lavora un file alla volta, per non sovraccaricare il Raspberry.
 
-HomeFlix non scarica contenuti da fonti non autorizzate: per i titoli che non hai, la lista desideri ti dice dove guardarli legalmente.
+Per i titoli che non hai, la lista desideri ti dice dove guardarli legalmente.
 
 ## Uso dell'interfaccia
 
@@ -148,8 +145,7 @@ homeflix/
 │   ├── server.js      server web, API e streaming dei video
 │   ├── scanner.js     scansione cartelle e riconoscimento dei nomi, metadati TMDB
 │   ├── tmdb.js        ricerca titoli e piattaforme di streaming
-│   ├── catalog.js     ricerca e scelta dei file nell'Internet Archive
-│   ├── jobs.js        coda di caricamenti, download e conversioni
+│   ├── jobs.js        coda di caricamenti e conversioni
 │   ├── db.js          database SQLite (titoli, file, progressi)
 │   └── scan-cli.js    scansione da riga di comando (npm run scan)
 ├── public/
@@ -161,7 +157,7 @@ homeflix/
 └── homeflix.service   servizio systemd per il Raspberry
 ```
 
-Le API principali, se vuoi collegarci altro: `GET /api/titles`, `GET /api/titles/:id`, `GET /api/continue`, `PUT /api/progress/:fileId`, `POST /api/scan` e `GET /stream/:fileId`. Per le funzioni di aggiunta: `GET /api/discover`, `GET /api/providers`, `GET|POST|DELETE /api/wishlist`, `POST /api/upload`, `GET /api/jobs`, `GET /api/catalog/genres`, `GET /api/catalog/search?q=&genre=` e `POST /api/catalog/download`.
+Le API principali, se vuoi collegarci altro: `GET /api/titles`, `GET /api/titles/:id`, `GET /api/continue`, `PUT /api/progress/:fileId`, `POST /api/scan` e `GET /stream/:fileId`. Per le funzioni di aggiunta: `GET /api/discover`, `GET /api/providers`, `GET|POST|DELETE /api/wishlist`, `POST /api/upload` e `GET /api/jobs`.
 
 ## Sicurezza
 
